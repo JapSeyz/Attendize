@@ -32,7 +32,7 @@ class OrderMailer
 
         Mail::send('Mailers.TicketMailer.SendOrderTickets', $data, function ($message) use ($order) {
             $message->to($order->email);
-            $message->subject('Your tickets for the event ' . $order->event->title);
+            $message->subject('Dine billetter til ' . $order->event->title);
 
             $file_name = $order->order_reference;
             $file_path = public_path(config('attendize.event_pdf_tickets_path')) . '/' . $file_name . '.pdf';

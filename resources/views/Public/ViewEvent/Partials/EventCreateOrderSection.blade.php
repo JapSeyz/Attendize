@@ -4,6 +4,15 @@
             Order Details
         </h1>
     </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="alert alert-info" id="countdown-footer">
+                Please note you only have <span id='countdown'></span> to complete this transaction before your tickets are re-released.
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-4 col-md-push-8">
             <div class="panel">
@@ -38,9 +47,6 @@
                 </div>
                 @endif
 
-            </div>
-            <div class="help-block">
-                Please note you only have <span id='countdown'></span> to complete this transaction before your tickets are re-released.
             </div>
         </div>
         <div class="col-md-8 col-md-pull-4">
@@ -162,6 +168,11 @@
 
                 @if(@$payment_gateway->is_on_site)
                     <div class="online_payment">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="alert alert-warning">Bemærk, vi tager ikke <b>Dankort</b></div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
