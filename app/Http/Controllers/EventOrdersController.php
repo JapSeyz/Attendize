@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\OrderCompletedEvent;
 use App\Models\Attendee;
 use App\Models\Event;
 use App\Models\Order;
@@ -371,6 +372,9 @@ class EventOrdersController extends MyBaseController
         $order->order_status_id = 1;
 
         $order->save();
+
+        // Generate and send the Tickets
+        event(new OrderCompletedEvent($order));
 
         session()->flash('message', 'Order Payment Status Successfully Updated');
 

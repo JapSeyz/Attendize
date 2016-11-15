@@ -650,8 +650,12 @@ class EventCheckoutController extends Controller
             /*
              * Queue up some tasks - Emails to be sent, PDFs etc.
              */
-            Log::info('Firing the event');
-            event(new OrderCompletedEvent($order));
+            if($order->is_payment_received) {
+                Log::info('Firing the event');
+                event(new OrderCompletedEvent($order));
+            } else {
+                Log::info('Withholding tickets until payment has been received');
+            }
 
 
         } catch (Exception $e) {
