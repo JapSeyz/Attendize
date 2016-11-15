@@ -9,7 +9,7 @@
 </p>
 
 <p>
-    Du kan kontakte <b>{{ (isset($sender_name) ? $sender_name : $event->organiser->name) }}</b> directly at <a href='mailto:{{ (isset($sender_email) ? $sender_email : $event->organiser->email) }}'>{{ (isset($sender_email) ? $sender_email : $event->organiser->email) }}</a>, or by replying to this email.
+    Du kan kontakte <b>{{ (isset($sender_name) ? $sender_name : $event->organiser->name) }}</b> direkte på <a href='mailto:{{ (isset($sender_email) ? $sender_email : $event->organiser->email) }}'>{{ (isset($sender_email) ? $sender_email : $event->organiser->email) }}</a>, eller ved at besvare denne mail.
 </p>
 @stop
 
