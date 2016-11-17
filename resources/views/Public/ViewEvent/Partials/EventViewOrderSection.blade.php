@@ -53,9 +53,9 @@
             <span class="massive-icon">
                 <i class="ico ico-checkmark-circle"></i>
             </span>
-            <h1>Thank you for your order!</h1>
+            <h1>Tak for din ordre!</h1>
             <h2>
-                Your <a title="Download Tickets" class="ticket_download_link" href="{{route('showOrderTickets', ['order_reference' => $order->order_reference])}}?download=1">tickets</a> and a confirmation email have been sent to you.
+                Dine <a title="Download billetter" class="ticket_download_link" href="{{route('showOrderTickets', ['order_reference' => $order->order_reference])}}?download=1">billetter</a> og en bekræftelsesmail er blevet sendt til dig.
             </h2>
         </div>
     </div>
@@ -73,15 +73,15 @@
                 <div class="order_details well">
                     <div class="row">
                         <div class="col-sm-4 col-xs-6">
-                            <b>First Name</b><br> {{$order->first_name}}
+                            <b>Fornavn</b><br> {{$order->first_name}}
                         </div>
 
                         <div class="col-sm-4 col-xs-6">
-                            <b>Last Name</b><br> {{$order->last_name}}
+                            <b>Efternavn</b><br> {{$order->last_name}}
                         </div>
 
                         <div class="col-sm-4 col-xs-6">
-                            <b>Amount</b><br> {{$order->event->currency_symbol}}{{number_format($order->total_amount,2)}}
+                            <b>Pris</b><br> {{$order->event->currency_symbol}}{{number_format($order->total_amount,2)}}
                         </div>
 
                         <div class="col-sm-4 col-xs-6">
@@ -89,7 +89,7 @@
                         </div>
 
                         <div class="col-sm-4 col-xs-6">
-                            <b>Date</b><br> {{$order->created_at->toDateTimeString()}}
+                            <b>Dato</b><br> {{$order->created_at->toDateTimeString()}}
                         </div>
 
                         <div class="col-sm-4 col-xs-6">
@@ -101,10 +101,10 @@
 
                     @if(!$order->is_payment_received)
                         <h3>
-                            Payment Instructions
+                            Betalingsintruktioner
                         </h3>
                     <div class="alert alert-info">
-                        This order is awaiting payment. Please read the below instructions on how to make payment.
+                        Denne ordre afventer betaling, se herunder hvordan du gør.
                     </div>
                     <div class="offline_payment_instructions well">
                         {!! Markdown::parse($event->offline_payment_instructions) !!}
@@ -113,7 +113,7 @@
                     @endif
 
                 <h3>
-                    Order Items
+                    Produkter
                 </h3>
 
                 <div class="table-responsive">
@@ -121,19 +121,13 @@
                         <thead>
                             <tr>
                                 <th>
-                                    Ticket
+                                    Billet
                                 </th>
                                 <th>
-                                    Quantity
+                                    Mængde
                                 </th>
                                 <th>
-                                    Price
-                                </th>
-                                <th>
-                                    Booking Fee
-                                </th>
-                                <th>
-                                    Total
+                                    Pris
                                 </th>
                             </tr>
                         </thead>
@@ -148,27 +142,10 @@
                                     </td>
                                     <td>
                                         @if((int)ceil($order_item->unit_price) == 0)
-                                        FREE
+                                        GRATIS
                                         @else
                                        {{money($order_item->unit_price, $order->event->currency)}}
                                         @endif
-
-                                    </td>
-                                    <td>
-                                        @if((int)ceil($order_item->unit_price) == 0)
-                                        -
-                                        @else
-                                        {{money($order_item->unit_booking_fee, $order->event->currency)}}
-                                        @endif
-
-                                    </td>
-                                    <td>
-                                        @if((int)ceil($order_item->unit_price) == 0)
-                                        FREE
-                                        @else
-                                        {{money(($order_item->unit_price + $order_item->unit_booking_fee) * ($order_item->quantity), $order->event->currency)}}
-                                        @endif
-
                                     </td>
                                 </tr>
                             @endforeach
@@ -195,7 +172,7 @@
                                     <td>
                                     </td>
                                     <td>
-                                        <b>Refunded Amount</b>
+                                        <b>Refunderet i alt</b>
                                     </td>
                                     <td colspan="2">
                                         {{money($order->amount_refunded, $order->event->currency)}}
@@ -209,7 +186,7 @@
                                     <td>
                                     </td>
                                     <td>
-                                        <b>Total</b>
+                                        <b>I alt</b>
                                     </td>
                                     <td colspan="2">
                                         {{money($order->total_amount - $order->amount_refunded, $order->event->currency)}}
@@ -222,7 +199,7 @@
                 </div>
 
                 <h3>
-                    Order Attendees
+                    Billetholdere
                 </h3>
 
                 <div class="table-responsive">
@@ -240,7 +217,7 @@
                                 </td>
                                 <td>
                                     @if($attendee->is_cancelled)
-                                        Cancelled
+                                        Aflyst
                                     @endif
                                 </td>
                             </tr>
@@ -248,8 +225,6 @@
                         </tbody>
                     </table>
                 </div>
-
-
             </div>
         </div>
     </div>

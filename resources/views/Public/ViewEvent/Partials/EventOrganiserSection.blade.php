@@ -6,7 +6,7 @@
                     <img alt="{{$event->organiser->name}}" src="{{asset($event->organiser->full_logo_path)}}" property="logo">
                 </div>
                     @if($event->organiser->enable_organiser_page)
-                    <a href="{{route('showOrganiserHome', [$event->organiser->id, Str::slug($event->organiser->name)])}}" title="Organiser Page">
+                    <a href="{{route('showOrganiserHome', [$event->organiser->id, Str::slug($event->organiser->name)])}}" title="Organiseringsside">
                         {{$event->organiser->name}}
                     </a>
                     @else
@@ -23,20 +23,21 @@
                             <i class="ico-facebook"></i>&nbsp; Facebook
                         </a>
                     @endif
-                        @if($event->organiser->twitter)
-                            <a property="sameAs" href="https://twitter.com/{{$event->organiser->twitter}}" class="btn btn-twitter">
-                                <i class="ico-twitter"></i>&nbsp; Twitter
-                            </a>
-                        @endif
+
+                    @if($event->organiser->twitter)
+                        <a property="sameAs" href="https://twitter.com/{{$event->organiser->twitter}}" class="btn btn-twitter">
+                            <i class="ico-twitter"></i>&nbsp; Twitter
+                        </a>
+                    @endif
                     <button onclick="$(function(){ $('.contact_form').slideToggle(); });" type="button" class="btn btn-primary">
-                        <i class="ico-envelop"></i>&nbsp; Contact
+                        <i class="ico-envelop"></i>&nbsp; Kontakt
                     </button>
                 </p>
                 <div class="contact_form well well-sm">
                     {!! Form::open(array('url' => route('postContactOrganiser', array('event_id' => $event->id)), 'class' => 'reset ajax')) !!}
                     <h3>Contact <i>{{$event->organiser->name}}</i></h3>
                     <div class="form-group">
-                        {!! Form::label('Your Name') !!}
+                        {!! Form::label('Dit Navn') !!}
                         {!! Form::text('name', null,
                             array('required',
                                   'class'=>'form-control',
@@ -44,7 +45,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('Your E-mail Address') !!}
+                        {!! Form::label('Din Email Addresse') !!}
                         {!! Form::text('email', null,
                             array('required',
                                   'class'=>'form-control',
@@ -52,7 +53,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('Your Message') !!}
+                        {!! Form::label('Din Besked') !!}
                         {!! Form::textarea('message', null,
                             array('required',
                                   'class'=>'form-control',
@@ -60,7 +61,7 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::submit('Send Message',
+                        {!! Form::submit('Send Besked',
                           array('class'=>'btn btn-primary')) !!}
                     </div>
                 </div>

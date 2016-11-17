@@ -18,7 +18,7 @@ return [
     'outgoing_email_name'    => env('MAIL_FROM_NAME'),
     'incoming_email'         => env('MAIL_FROM_ADDRESS'),
 
-    'app_name'               => 'Attendize Event Ticketing',
+    'app_name'               => 'Ikast Musikliv',
     'event_default_bg_color' => '#B23333',
     'event_default_bg_image' => 'assets/images/public/EventPage/backgrounds/5.jpg',
 
@@ -56,10 +56,10 @@ return [
 
 
     'default_timezone'           => 30, #Europe/Dublin
-    'default_currency'           => 2, #Euro
+    'default_currency'           => 7, #DKK
     'default_date_format'        => 'j M, Y',
     'default_date_picker_format' => 'd M, yyyy',
-    'default_datetime_format'    => 'F j, Y, g:i a',
+    'default_datetime_format'    => 'j M, Y, H:i',
     'default_query_cache'        => 120, #Minutes
     'default_locale'             => 'en',
     'default_payment_gateway'    => 1, #Stripe=1 Paypal=2 BitPay=3 MIGS=4

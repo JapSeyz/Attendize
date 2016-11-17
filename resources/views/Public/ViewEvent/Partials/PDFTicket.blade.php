@@ -56,36 +56,35 @@
             @foreach($attendees as $attendee)
                 @if(!$attendee->is_cancelled)
                     <div class="ticket no-sponsors">
-
                         <div class='logo'>
-				<img alt="{{$event->organiser->full_logo_path}}" src="data:image/png;base64, {{$image}}" />
+				            <img alt="{{$event->organiser->full_logo_path}}" src="data:image/png;base64, {{$image}}" />
                         </div>
 
                         <div class="event_details">
-                            <h4>Event</h4>
+                            <h4>Begivenhed</h4>
                             {{$event->title}}
-                            <h4>Organiser</h4>
+                            <h4>Organisation</h4>
                             {{$event->organiser->name}}
-                            <h4>Venue</h4>
+                            <h4>Lokation</h4>
                             {{$event->venue_name}}
-                            <h4>Start Date / Time</h4>
+                            <h4>Start Dato / Tid</h4>
                             {{$event->start_date->format('M dS g:iA')}}
-                            <h4>End Date / Time</h4>
+                            <h4>Slut Dato / Tid</h4>
                             {{$event->end_date->format('M dS g:iA')}}
                         </div>
 
                         <div class="attendee_details">
-                            <h4>Name</h4>
+                            <h4>Navn</h4>
                             {{$attendee->first_name.' '.$attendee->last_name}}
 
-                            <h4>Ticket Type</h4>
+                            <h4>Billettype</h4>
                             {{$attendee->ticket->title}}
-                            <h4>Order Ref.</h4>
+                            <h4>Ordrenummer</h4>
                             {{$order->order_reference}}
-                            <h4>Attendee Ref.</h4>
+                            <h4>Billetnummer</h4>
                             {{$attendee->reference}}
-                            <h4>Price</h4>
-                            {{money($attendee->ticket->total_price, $order->event->currency)}} (inc. {{money($attendee->ticket->total_booking_fee, $order->event->currency)}} Fees)
+                            <h4>Pris</h4>
+                            {{money($attendee->ticket->total_price, $order->event->currency)}}
                         </div>
 
                         <div class="barcode">
@@ -99,12 +98,6 @@
                     </div>
                 @endif
             @endforeach
-
-            <div class="bottom_info">
-                {{--Attendize is provided free of charge on the condition the below hyperlink is left in place.--}}
-                {{--See https://www.attendize.com/licence.php for more information.--}}
-                @include('Shared.Partials.PoweredBy')
-            </div>
         </div>
     </body>
 </html>

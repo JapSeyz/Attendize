@@ -13,14 +13,14 @@
             <h1 property="name">{{$event->title}}</h1>
             <div class="event_venue">
                 <span property="startDate" content="{{ $event->start_date->toIso8601String() }}">
-                    {{ $event->start_date->format('D d M H:i A') }}
+                    {{ localize_date($event->start_date, 'd F Y H:i') }}
                 </span>
                 -
                 <span property="endDate" content="{{ $event->end_date->toIso8601String() }}">
                      @if($event->start_date->diffInHours($event->end_date) <= 12)
-                        {{ $event->end_date->format('H:i A') }}
+                        {{ localize_date($event->end_date, 'H:i') }}
                      @else
-                        {{ $event->end_date->format('D d M H:i A') }}
+                        {{ localize_date($event->end_date, 'd F Y H:i') }}
                      @endif
                 </span>
                 @

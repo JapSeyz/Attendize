@@ -35,28 +35,31 @@
                 </div>
                 <div class="body">
                     <div class="left_column">
-                        <h4>Name</h4>
+                        <h4>Navn</h4>
                         <span class="info">{{$attendee->first_name.' '.$attendee->last_name}}</span>
 
-                        <h4>Order No.</h4>
+                        <h4>Ordrenummer</h4>
                         <span class="info">{{$order->order_reference}}</span>
 
-                        <h4>Start Date</h4>
+                        <h4>Start Dato</h4>
                         <span class="info">{{ $event->start_date->format('m-d H:i') }}</span>
 
-                        <h4>Price</h4>
-                        <span class="info">{{money($attendee->ticket->total_price, $order->event->currency)}}</span>
+                        <h4>Lokation</h4>
+                        <span class="info">{{$event->venue_name}}</span>
                     </div>
 
                     <div class="right_column">
-                        <h4>Ticket Type</h4>
+                        <h4>Billettype</h4>
                         <span class="info">{{$attendee->ticket->title}}</span>
 
-                        <h4>Ticket Number</h4>
+                        <h4>Billetnummer</h4>
                         <span class="info">{{$attendee->reference}}</span>
 
-                        <h4>End Date</h4>
+                        <h4>Slut Dato</h4>
                         <span class="info">{{ $event->end_date->format('m-d H:i') }}</span>
+
+                        <h4>Pris</h4>
+                        <span class="info">{{money($attendee->ticket->total_price, $order->event->currency)}}</span>
                     </div>
 
                     <div class="logo-column">

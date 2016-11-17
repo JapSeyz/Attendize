@@ -1,18 +1,16 @@
 <section id="tickets" class="container">
     <div class="row">
         <h1 class='section_head'>
-            Tickets
+            Billetter
         </h1>
     </div>
 
-    @if($event->start_date->isPast())
+    @if($event->end_date->isPast())
         <div class="alert alert-boring">
-            This event has {{($event->end_date->isFuture() ? 'already started' : 'ended')}}.
+            Denne begivenhed er desværre slut.
         </div>
     @else
-
         @if($tickets->count() > 0)
-
             {!! Form::open(['url' => route('postValidateTickets', ['event_id' => $event->id]), 'class' => 'ajax']) !!}
             <div class="row">
                 <div class="col-md-12">
@@ -35,13 +33,13 @@
                                         <td style="width:180px; text-align: right;">
                                             <div class="ticket-pricing" style="margin-right: 20px;">
                                                 @if($ticket->is_free)
-                                                    FREE
+                                                    GRATIS
                                                     <meta property="price" content="0">
                                                 @else
                                                     <?php
                                                     $is_free_event = false;
                                                     ?>
-                                                    <span title='{{money($ticket->price, $event->currency)}} Ticket Price + {{money($ticket->total_booking_fee, $event->currency)}} Booking Fees'>{{money($ticket->total_price, $event->currency)}} </span>
+                                                    <span title='{{money($ticket->price, $event->currency)}} Billet pris'>{{money($ticket->total_price, $event->currency)}} </span>
                                                     <meta property="priceCurrency"
                                                           content="{{ $event->currency->code }}">
                                                     <meta property="price"
@@ -51,26 +49,23 @@
                                         </td>
                                         <td style="width:85px;">
                                             @if($ticket->is_paused)
-
                                                 <span class="text-danger">
-                                    Currently Not On Sale
-                                </span>
-
+                                                    Ikke til salg i øjeblikket
+                                                </span>
                                             @else
-
                                                 @if($ticket->sale_status === config('attendize.ticket_status_sold_out'))
                                                     <span class="text-danger" property="availability"
                                                           content="http://schema.org/SoldOut">
-                                    Sold Out
-                                </span>
+                                                        Udsolgt
+                                                    </span>
                                                 @elseif($ticket->sale_status === config('attendize.ticket_status_before_sale_date'))
                                                     <span class="text-danger">
-                                    Sales Have Not Started
-                                </span>
+                                                        Sælges ikke endnu
+                                                    </span>
                                                 @elseif($ticket->sale_status === config('attendize.ticket_status_after_sale_date'))
                                                     <span class="text-danger">
-                                    Sales Have Ended
-                                </span>
+                                                        Sælges ikke længere
+                                                    </span>
                                                 @else
                                                     {!! Form::hidden('tickets[]', $ticket->id) !!}
                                                     <meta property="availability" content="http://schema.org/InStock">
@@ -92,7 +87,7 @@
 
                                 <tr class="checkout">
                                     <td colspan="3">
-                                        {!!Form::submit('Register', ['class' => 'btn btn-lg btn-primary pull-right'])!!}
+                                        {!!Form::submit('Videre', ['class' => 'btn btn-lg btn-primary pull-right'])!!}
                                     </td>
                                 </tr>
                             </table>
@@ -102,15 +97,10 @@
             </div>
             {!! Form::hidden('is_embedded', $is_embedded) !!}
             {!! Form::close() !!}
-
         @else
-
             <div class="alert alert-boring">
-                Tickets are currently unavailable.
+                Der er ingen billetter tilgængelige i øjeblikket.
             </div>
-
         @endif
-
     @endif
-
 </section>

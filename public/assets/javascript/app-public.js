@@ -284,18 +284,18 @@ function setCountdown($element, seconds) {
     function updateTimer() {
         msLeft = endTime - (+new Date);
         if (msLeft < 1000) {
-            alert("You have run out of time! You will have to restart the order process.");
+            alert("Din reservation er udløbet, start venligst ordreprocessen igen");
             location.reload();
         } else {
 
             if (msLeft < 120000 && !twoMinWarningShown) {
-                showMessage("You only have 2 minutes left to complete this order!");
+                showMessage("Du har kun 2 minutter tilbage til at færdiggøre denne ordre!");
                 twoMinWarningShown = true;
             }
 
             time = new Date(msLeft);
             mins = time.getUTCMinutes();
-            $element.html('<b>' + mins + '</b> minutes and <b>' + twoDigits(time.getUTCSeconds()) + '</b> seconds');
+            $element.html('<b>' + mins + '</b> minutter og<b>' + twoDigits(time.getUTCSeconds()) + '</b> sekunder');
             setTimeout(updateTimer, time.getUTCMilliseconds() + 500);
         }
     }
