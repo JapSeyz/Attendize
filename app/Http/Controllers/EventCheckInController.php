@@ -102,7 +102,7 @@ class EventCheckInController extends MyBaseController
         if ((($checking == 'in') && ($attendee->has_arrived == 1)) || (($checking == 'out') && ($attendee->has_arrived == 0))) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'Attendee Already Checked ' . (($checking == 'in') ? 'In (at ' . $attendee->arrival_time->format('H:i A, F j') . ')' : 'Out') . '!',
+                'message' => 'Billetholder allerede tjekket ' . (($checking == 'in') ? 'Ind (' . localize_date($attendee->arrival_time, 'N, kl. H:i') . ')' : 'Ud') . '!',
                 'checked' => $checking,
                 'id'      => $attendee->id,
             ]);
@@ -115,7 +115,7 @@ class EventCheckInController extends MyBaseController
         return response()->json([
             'status'  => 'success',
             'checked' => $checking,
-            'message' => 'Attendee Successfully Checked ' . (($checking == 'in') ? 'In' : 'Out'),
+            'message' => 'Billetholder er tjekket ' . (($checking == 'in') ? 'Ind' : 'Ud'),
             'id'      => $attendee->id,
         ]);
     }
@@ -153,7 +153,7 @@ class EventCheckInController extends MyBaseController
         if (is_null($attendee)) {
             return response()->json([
                 'status'  => 'error',
-                'message' => "Invalid Ticket! Please try again."
+                'message' => "Ugyldig Billet, prøv igen!"
             ]);
         }
 
@@ -177,7 +177,7 @@ class EventCheckInController extends MyBaseController
         if ($attendee->has_arrived) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'Attendee already checked in at ' . $attendee->arrival_time->format('H:i A, F j') . $appendedText
+                'message' => 'Billetholder er allerede tjekket ind kl. ' . localize_date($attendee->arrival_time, 'N, kl. H:i') . $appendedText
             ]);
         }
 
@@ -185,7 +185,7 @@ class EventCheckInController extends MyBaseController
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'Success !<br>Name: ' . $attendee->first_name . ' ' . $attendee->last_name . '<br>Reference: ' . $attendee->reference . '<br>Ticket: ' . $attendee->ticket . '.' . $appendedText
+            'message' => 'Success !<br>Navn: ' . $attendee->first_name . ' ' . $attendee->last_name . '<br>Reference: ' . $attendee->reference . '<br>Billet: ' . $attendee->ticket . '.' . $appendedText
         ]);
     }
 
@@ -208,7 +208,7 @@ class EventCheckInController extends MyBaseController
         ]);
 
         return response()->json([
-            'message' => $updateRowsCount . ' Attendee(s) Checked in.'
+            'message' => $updateRowsCount . ' Billetholdere Tjekket Ind.'
         ]);
     }
 

@@ -6,11 +6,11 @@
 @stop
 
 @section('blankslate-title')
-    No Search Results
+    Ingen resultater
 @stop
 
 @section('blankslate-text')
-    There was nothing found matching the term '{{isset($search['q']) ? $search['q'] : $q}}'
+    Der blev ikke fundet noget på søgningen: '{{isset($search['q']) ? $search['q'] : $q}}'
 @stop
 
 @section('blankslate-body')

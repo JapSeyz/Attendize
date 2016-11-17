@@ -1,4 +1,3 @@
-
 <div class="row">
     <div class="col-md-12">
         <h1 class="event-listing-heading">{{ $panel_title }}</h1>
@@ -31,7 +30,7 @@
                 @endforeach
             @else
                 <div class="alert alert-info">
-                    There are no {{ $panel_title }} to display.
+                    Der er ingen {{ $panel_title }} at vise.
                 </div>
             @endif
 
