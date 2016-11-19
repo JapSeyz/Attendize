@@ -139,7 +139,7 @@
 .ticket.sponsors h4{
     margin-top: 4rem;
     color:#000;
-    font-weight:800;
+    font-family:Exo;
 }
 
 .ticket.sponsors span, .ticket.sponsors p{
@@ -163,7 +163,10 @@
     margin-bottom:20px;
     font-size: 7rem;
     line-height: 75px;
-    font-weight:300;
+}
+.ticket.sponsors .header p,
+.ticket.sponsors .header span {
+    font-family:Exo;
 }
 
 .ticket.sponsors .ticket-type{
