@@ -30,9 +30,7 @@ class OrganiserCustomizeController extends MyBaseController
      *
      * @param Request $request
      * @param $organiser_id
-     *
      * @return mixed
-     * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
      */
     public function postEditOrganiser(Request $request, $organiser_id)
     {
@@ -58,20 +56,7 @@ class OrganiserCustomizeController extends MyBaseController
         }
 
         if ($request->hasFile('organiser_logo')) {
-            $filename = str_slug($organiser->name).'-logo-'.$organiser->id.'.'.strtolower($request->file('organiser_logo')->getClientOriginalExtension());
-
-            // Image Directory
-            $imageDirectory = public_path() . '/' . config('attendize.organiser_images_path');
-
-            // Paths
-            $relativePath = config('attendize.organiser_images_path').'/'.$filename;
-            $absolutePath = public_path($relativePath);
-
-            $request->file('organiser_logo')->move($imageDirectory, $filename);
-
-            if (file_exists($absolutePath)) {
-                $organiser->logo_path = $relativePath;
-            }
+            $organiser->setLogo($request->file('organiser_logo'));
         }
 
         $organiser->save();
