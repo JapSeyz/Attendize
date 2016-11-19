@@ -29,32 +29,32 @@
                         <div class="col-xs-7">
                             <div class="row">
                                 <div class="col-xs-7">
-                                    <h4>Start Date</h4>
+                                    <h4>Start:</h4>
                                     <span>{{ $event->start_date->format('m-d H:i') }}</span>
 
-                                    <h4>Location</h4>
+                                    <h4>Placering:</h4>
                                     <p>{{ $event->venue_name }}</p>
                                     <p>{{ $event->location_address }}</p>
                                     <p>{{ $event->location_address_line_1 }}</p>
                                 </div>
                                 <div class="col-xs-5">
-                                    <h4>End Date</h4>
+                                    <h4>Slut:</h4>
                                     <span>{{ $event->end_date->format('m-d H:i') }}</span>
 
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-5 b-l-2 ticket-data">
-                            <h4>Name</h4>
+                            <h4>Navn</h4>
                             <span>{{$attendee->first_name.' '.$attendee->last_name}}</span>
 
-                            <h4>Order No.</h4>
+                            <h4>Ordrenr.:</h4>
                             <span>{{$order->order_reference}}</span>
 
-                            <h4>Ticket Number</h4>
+                            <h4>Billetnr.:</h4>
                             <span>{{$attendee->reference}}</span>
 
-                            <h4>Price</h4>
+                            <h4>Pris:</h4>
                             <span>{{money($attendee->ticket->total_price, $order->event->currency)}}</span>
                         </div>
                     </div>
