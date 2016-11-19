@@ -53,24 +53,19 @@ class OrganiserController extends MyBaseController
         $organiser->confirmation_key = str_random(15);
 
         if ($request->hasFile('organiser_logo')) {
-            $path = public_path() . '/' . config('attendize.organiser_images_path');
-            $filename = 'organiser_logo-' . $organiser->id . '.' . strtolower($request->file('organiser_logo')->getClientOriginalExtension());
+            $filename = str_slug($organiser->name).'-logo-'.$organiser->id.'.'.strtolower($request->file('organiser_logo')->getClientOriginalExtension());
 
-            $file_full_path = $path . '/' . $filename;
+            // Image Directory
+            $imageDirectory = public_path() . '/' . config('attendize.organiser_images_path');
 
-            $request->file('organiser_logo')->move($path, $filename);
+            // Paths
+            $relativePath = config('attendize.organiser_images_path').'/'.$filename;
+            $absolutePath = public_path($relativePath);
 
-            $img = Image::make($file_full_path);
+            $request->file('organiser_logo')->move($imageDirectory, $filename);
 
-            $img->resize(250, 250, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-
-            $img->save($file_full_path);
-
-            if (file_exists($file_full_path)) {
-                $organiser->logo_path = config('attendize.organiser_images_path') . '/' . $filename;
+            if (file_exists($absolutePath)) {
+                $organiser->logo_path = $relativePath;
             }
         }
 

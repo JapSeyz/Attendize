@@ -30,7 +30,9 @@ class OrganiserCustomizeController extends MyBaseController
      *
      * @param Request $request
      * @param $organiser_id
+     *
      * @return mixed
+     * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
      */
     public function postEditOrganiser(Request $request, $organiser_id)
     {
@@ -56,23 +58,19 @@ class OrganiserCustomizeController extends MyBaseController
         }
 
         if ($request->hasFile('organiser_logo')) {
-            $the_file = \File::get($request->file('organiser_logo')->getRealPath());
-            $file_name = str_slug($organiser->name).'-logo-'.$organiser->id.'.'.strtolower($request->file('organiser_logo')->getClientOriginalExtension());
+            $filename = str_slug($organiser->name).'-logo-'.$organiser->id.'.'.strtolower($request->file('organiser_logo')->getClientOriginalExtension());
 
-            $relative_path_to_file = config('attendize.organiser_images_path').'/'.$file_name;
-            $full_path_to_file = public_path($relative_path_to_file);
+            // Image Directory
+            $imageDirectory = public_path() . '/' . config('attendize.organiser_images_path');
 
-            $img = Image::make($the_file);
+            // Paths
+            $relativePath = config('attendize.organiser_images_path').'/'.$filename;
+            $absolutePath = public_path($relativePath);
 
-            $img->resize(250, 250, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            $request->file('organiser_logo')->move($imageDirectory, $filename);
 
-            $img->save($full_path_to_file);
-
-            if (\Storage::put($file_name, $the_file)) {
-                $organiser->logo_path = $relative_path_to_file;
+            if (file_exists($absolutePath)) {
+                $organiser->logo_path = $relativePath;
             }
         }
 
