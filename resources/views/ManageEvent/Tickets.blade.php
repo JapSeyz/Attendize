@@ -122,8 +122,18 @@
                                 @endif
                                 {{$ticket->title}}
                                 <span class="pull-right">
-                        {{ ($ticket->is_free) ? "FREE" : money($ticket->price, $event->currency) }}
-                    </span>
+                                    {{ ($ticket->is_free) ? "FREE" : money($ticket->price, $event->currency) }}
+
+                                    @if($ticket->quantity_sold == 0)
+                                        {!! Form::model($ticket, ['url' => route('postDeleteTicket', ['event_id' => $event->id]), 'class' => 'ajax']) !!}
+
+                                        {{ csrf_field() }}
+                                        <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+
+                                        <button class="btn btn-danger btn-xs">Delete</button>
+                                        {!! Form::close() !!}
+                                    @endif
+                                </span>
                             </h3>
                         </div>
                         <div class='panel-body'>
@@ -179,6 +189,7 @@
                                     <i class="ico-pause"></i> Pause
                                 </span>
                                             @endif
+
                                         @else
                                             {{\App\Models\TicketStatus::find($ticket->sale_status)->name}}
                                         @endif
