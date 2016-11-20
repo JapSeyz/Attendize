@@ -171,6 +171,7 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
+        Spatie\Backup\BackupServiceProvider::class,
     ],
 
     /*
