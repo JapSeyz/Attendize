@@ -179,6 +179,16 @@
                                     <i class="ico-pause"></i> Pause
                                 </span>
                                             @endif
+
+                                            @if($ticket->quantity_sold == 0)
+                                                {!! Form::model($ticket, ['url' => route('postDeleteTicket', ['event_id' => $event->id]), 'class' => 'ajax pull-right']) !!}
+
+                                                <input type="hidden" name="ticket_id" value="{{ $ticket->id }}">
+
+                                                <button class="btn btn-danger btn-xs">Delete</button>
+                                                {!! Form::close() !!}
+                                            @endif
+
                                         @else
                                             {{\App\Models\TicketStatus::find($ticket->sale_status)->name}}
                                         @endif
