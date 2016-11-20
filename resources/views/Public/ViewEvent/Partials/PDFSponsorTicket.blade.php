@@ -49,7 +49,7 @@
                                     <p>{{ $event->location_address }}</p>
                                     <p>{{ $event->location_address_line_1 }}</p>
                                 </div>
-                                <div class="col-xs-5">
+                                <div class="col-xs-5 ticket-center">
                                     <h4>Slut:</h4>
                                     <span>{{ $event->end_date->format('m-d H:i') }}</span>
 

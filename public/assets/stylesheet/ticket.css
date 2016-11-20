@@ -198,6 +198,10 @@
     line-height:.3rem;
 }
 
+.ticket.sponsors .ticket-center{
+    padding-left:7.2rem;
+}
+
 .ticket.sponsors .ticket-data{
     padding-bottom: 2rem;
     padding-left: 3rem;
