@@ -164,7 +164,7 @@ class EventTicketsController extends MyBaseController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function postDeleteTicket(Request $request)
+    public function postDeleteTicket($event_id, Request $request)
     {
         $ticket_id = $request->get('ticket_id');
 
@@ -186,6 +186,9 @@ class EventTicketsController extends MyBaseController
                 'status'  => 'success',
                 'message' => 'Ticket Successfully Deleted',
                 'id'      => $ticket->id,
+                'redirectUrl' => route('showEventTickets', [
+                    'event_id' => $event_id,
+                ]),
             ]);
         }
 
