@@ -35,7 +35,7 @@ Attendees
         <div class="btn-group btn-group-responsive">
             <button data-modal-id="ImportAttendees" href="javascript:void(0);"  data-href="{{route('showImportAttendee', ['event_id'=>$event->id])}}" class="loadModal btn btn-success" type="button"><i class="ico-file"></i> Invite Attendees</button>
         </div>
-        
+
         <div class="btn-group btn-group-responsive">
             <a class="btn btn-success" href="{{route('showPrintAttendees', ['event_id'=>$event->id])}}" target="_blank" ><i class="ico-print"></i> Print Attendee List</a>
         </div>
@@ -92,7 +92,7 @@ Attendees
                                {!!Html::sortable_link('Order Ref.', $sort_by, 'order_reference', $sort_order, ['q' => $q , 'page' => $attendees->currentPage()])!!}
                             </th>
                             <th>
-                                {!!Html::sortable_link('Ticket Number', $sort_by, 'ticket_number', $sort_order, ['q' => $q , 'page' => $attendees->currentPage()])!!}
+                                {!!Html::sortable_link('Ticket Ref.', $sort_by, 'ticket_reference', $sort_order, ['q' => $q , 'page' => $attendees->currentPage()])!!}
                             </th>
                             <th></th>
                         </tr>
@@ -115,11 +115,11 @@ Attendees
                                 </a>
                             </td>
                             <td>
-                                <a href="javascript:void(0);" data-modal-id="EditAttendee"
+                                <a data-modal-id="EditAttendee"
                                    href="javascript:void(0);"
                                    data-href="{{route('showEditAttendee', ['event_id'=>$event->id, 'attendee_id'=>$attendee->id])}}"
                                    class="loadModal">
-                                    {{{$attendee->reference_index}}}
+                                    {{$attendee->reference_index}}
                                 </a>
                             </td>
                             <td class="text-center">

@@ -30,6 +30,10 @@ Event Orders
 <div class="col-md-9 col-sm-6">
     <!-- Toolbar -->
     <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group btn-group-responsive">
+            <button data-modal-id="CreateEmptyAttendees" href="javascript:void(0);"  data-href="{{route('showCreateEmptyAttendee', ['event_id'=>$event->id])}}" class="loadModal btn btn-success" type="button"><i class="ico-file"></i> Create Empty Tickets</button>
+        </div>
+
         <div class="btn-group btn-group btn-group-responsive">
             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
                 <i class="ico-users"></i> Export <span class="caret"></span>
