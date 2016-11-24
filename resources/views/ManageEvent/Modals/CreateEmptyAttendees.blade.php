@@ -6,7 +6,7 @@
                 <button type="button" class="close" data-dismiss="modal">×</button>
                 <h3 class="modal-title">
                     <i class="ico-user-plus"></i>
-                    Create Printable Tickets</h3>
+                    Create Empty Tickets</h3>
             </div>
             <div class="modal-body">
                 <div class="row">
