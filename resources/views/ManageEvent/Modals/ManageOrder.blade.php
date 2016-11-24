@@ -187,7 +187,7 @@
             </div> <!-- /end modal body-->
 
             <div class="modal-footer">
-                <a class="btn btn-info" href="{{route('showOrderTickets', ['order_reference' => $order->order_reference])}}?download=1">Print Tickets</a>
+                <a class="btn btn-info" target="_blank" href="{{route('showOrderTickets', ['order_reference' => $order->order_reference])}}?download=1">Print Tickets</a>
                {!! Form::button('Close', ['class'=>"btn modal-close btn-danger",'data-dismiss'=>'modal']) !!}
             </div>
         </div><!-- /end modal content-->
