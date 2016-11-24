@@ -272,17 +272,48 @@ class EventAttendeesController extends MyBaseController
                 'status'   => 'error',
                 'messages' => $validator->messages()->toArray(),
             ]);
-
         }
 
-        $ticket_id = $request->get('ticket_id');
-        $ticket_price = 0;
         $email_attendee = $request->get('email_ticket');
         $num_added = 0;
-        if ($request->file('attendees_list')) {
 
+        if ($request->file('attendees_list')) {
             $the_file = Excel::load($request->file('attendees_list')->getRealPath(), function ($reader) {
             })->get();
+
+            $totalNum = count($the_file);
+
+
+            /*
+             * Update the Ticket
+             */
+            $ticket_id = $request->get('ticket_id');
+            $ticket = Ticket::scope()->find($ticket_id);
+            $ticket_price = $ticket->price;
+            $ticket->increment('quantity_sold', $totalNum);
+            $ticket->increment('sales_volume', $ticket_price * $totalNum);
+            $ticket->event->increment('sales_volume', $ticket_price * $totalNum);
+
+
+            /**
+             * Create the order
+             */
+            $order = new Order();
+            $order->first_name = $the_file[0]['first_name'];
+            $order->last_name = $the_file[0]['last_name'];
+            $order->email = $the_file[0]['email'];
+            $order->order_status_id = config('attendize.order_complete');
+            $order->amount = $ticket_price * $totalNum;
+            $order->account_id = Auth::user()->account_id;
+            $order->event_id = $event_id;
+            $order->save();
+
+            /**
+             * Update the event stats
+             */
+            $event_stats = new EventStats();
+            $event_stats->updateTicketsSoldCount($event_id, $totalNum);
+            $event_stats->updateTicketRevenue($ticket_id, $ticket_price * $totalNum);
 
             // Loop through
             foreach ($the_file as $rows) {
@@ -294,28 +325,6 @@ class EventAttendeesController extends MyBaseController
 
                     error_log($ticket_id . ' ' . $ticket_price . ' ' . $email_attendee);
 
-
-                    /**
-                     * Create the order
-                     */
-                    $order = new Order();
-                    $order->first_name = $attendee_first_name;
-                    $order->last_name = $attendee_last_name;
-                    $order->email = $attendee_email;
-                    $order->order_status_id = config('attendize.order_complete');
-                    $order->amount = $ticket_price;
-                    $order->account_id = Auth::user()->account_id;
-                    $order->event_id = $event_id;
-                    $order->save();
-
-                    /**
-                     * Update qty sold
-                     */
-                    $ticket = Ticket::scope()->find($ticket_id);
-                    $ticket->increment('quantity_sold');
-                    $ticket->increment('sales_volume', $ticket_price);
-                    $ticket->event->increment('sales_volume', $ticket_price);
-
                     /**
                      * Insert order item
                      */
@@ -325,13 +334,6 @@ class EventAttendeesController extends MyBaseController
                     $orderItem->order_id = $order->id;
                     $orderItem->unit_price = $ticket_price;
                     $orderItem->save();
-
-                    /**
-                     * Update the event stats
-                     */
-                    $event_stats = new EventStats();
-                    $event_stats->updateTicketsSoldCount($event_id, 1);
-                    $event_stats->updateTicketRevenue($ticket_id, $ticket_price);
 
                     /**
                      * Create the attendee
@@ -351,15 +353,147 @@ class EventAttendeesController extends MyBaseController
                         $this->dispatch(new SendAttendeeInvite($attendee));
                     }
                 }
-            };
+            }
         }
 
         session()->flash('message', $num_added . ' Attendees Successfully Invited');
 
         return response()->json([
             'status'      => 'success',
-            'id'          => $attendee->id,
             'redirectUrl' => route('showEventAttendees', [
+                'event_id' => $event_id,
+            ]),
+        ]);
+    }
+
+
+    /**
+     * Show the 'Create Empty Attendee' modal
+     *
+     * @param Request $request
+     * @param $event_id
+     * @return string|View
+     */
+    public function showCreateEmptyAttendee(Request $request, $event_id)
+    {
+        $event = Event::scope()->find($event_id);
+
+        /*
+         * If there are no tickets then we can't create an attendee
+         * @todo This is a bit hackish
+         */
+        if ($event->tickets->count() === 0) {
+            return '<script>showMessage("You need to create a ticket before you can add an attendee.");</script>';
+        }
+
+        return view('ManageEvent.Modals.CreateEmptyAttendees', [
+            'event'   => $event,
+            'tickets' => $event->tickets()->lists('title', 'id'),
+        ]);
+    }
+
+
+    /**
+     * Create Empty Attendees, useable for printed blank tickets
+     *
+     * @param Request $request
+     * @param $event_id
+     * @return mixed
+     */
+    public function postCreateEmptyAttendee(Request $request, $event_id)
+    {
+        $rules = [
+            'ticket_id'      => 'required|exists:tickets,id,account_id,' . \Auth::user()->account_id,
+            'attendees_to_create' => 'required|numeric',
+            'order_first_name' => 'required',
+            'order_last_name' => 'required',
+            'order_email' => 'required|email',
+        ];
+
+        $messages = [
+            'ticket_id.exists' => 'The ticket you have selected does not exist',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'   => 'error',
+                'messages' => $validator->messages()->toArray(),
+            ]);
+        }
+
+        $attendees_to_create = $request->input('attendees_to_create');
+
+        // Ticket Details
+        $ticket_id = $request->get('ticket_id');
+        $ticket = Ticket::scope()->findOrFail($ticket_id);
+
+        $ticket_price = $ticket->price;
+        $ticket->increment('quantity_sold', $attendees_to_create);
+        $ticket->increment('sales_volume', $ticket_price * $attendees_to_create);
+        $ticket->event->increment('sales_volume', $ticket_price * $attendees_to_create);
+
+
+        /**
+         * Update the event stats
+         */
+        $event_stats = new EventStats();
+        $event_stats->updateTicketsSoldCount($event_id, $attendees_to_create);
+        $event_stats->updateTicketRevenue($ticket_id, $attendees_to_create * $ticket_price);
+
+        // Order Details
+        $order_first_name = $request->get('order_first_name');
+        $order_last_name = $request->get('order_last_name');
+        $order_email = $request->get('order_email');
+
+        /**
+         * Create the order
+         */
+        $order = new Order();
+        $order->first_name = $order_first_name;
+        $order->last_name = $order_last_name;
+        $order->email = $order_email;
+        $order->order_status_id = config('attendize.order_complete');
+        $order->amount = $ticket_price * $attendees_to_create;
+        $order->account_id = Auth::user()->account_id;
+        $order->event_id = $event_id;
+        $order->is_payment_received = 1;
+        $order->save();
+
+        for ($num_added = 1; $num_added <= $attendees_to_create; $num_added++) {
+            error_log($ticket_id . ' ' . $ticket_price . ' ' . $order_email);
+
+            /**
+             * Insert order item
+             */
+            $orderItem = new OrderItem();
+            $orderItem->title = $ticket->title;
+            $orderItem->quantity = 1;
+            $orderItem->order_id = $order->id;
+            $orderItem->unit_price = $ticket_price;
+            $orderItem->save();
+
+            /**
+             * Create the attendee
+             */
+            $attendee = new Attendee();
+            $attendee->first_name = '';
+            $attendee->last_name = '';
+            $attendee->email = '';
+            $attendee->event_id = $event_id;
+            $attendee->order_id = $order->id;
+            $attendee->ticket_id = $ticket_id;
+            $attendee->account_id = Auth::user()->account_id;
+            $attendee->reference_index = $num_added;
+            $attendee->save();
+        }
+
+
+        session()->flash('message', $attendees_to_create . ' Blank Tickets Successfully Created');
+
+        return response()->json([
+            'status'      => 'success',
+            'redirectUrl' => route('showEventOrders', [
                 'event_id' => $event_id,
             ]),
         ]);
