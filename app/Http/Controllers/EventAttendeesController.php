@@ -281,13 +281,32 @@ class EventAttendeesController extends MyBaseController
         }
 
         $ticket_id = $request->get('ticket_id');
-        $ticket_price = 0;
+        $ticket = Ticket::scope()->findOrFail($ticket_id);
+        $ticket_price = $ticket->price;
         $email_attendee = $request->get('email_ticket');
         $num_added = 0;
+
+
         if ($request->file('attendees_list')) {
 
             $the_file = Excel::load($request->file('attendees_list')->getRealPath(), function ($reader) {
             })->get();
+
+
+            /**
+             * Create the order
+             */
+            $order = new Order();
+            $order->first_name = $the_file[0]['first_name'];
+            $order->last_name = $the_file[0]['last_name'];
+            $order->email = $the_file[0]['email'];
+            $order->order_status_id = config('attendize.order_complete');
+            $order->amount = ($ticket_price * count($the_file));
+            $order->account_id = Auth::user()->account_id;
+            $order->event_id = $event_id;
+            $order->is_payment_received = 1;
+            $order->save();
+
 
             // Loop through
             foreach ($the_file as $rows) {
@@ -298,20 +317,6 @@ class EventAttendeesController extends MyBaseController
                     $attendee_email = $rows['email'];
 
                     error_log($ticket_id . ' ' . $ticket_price . ' ' . $email_attendee);
-
-
-                    /**
-                     * Create the order
-                     */
-                    $order = new Order();
-                    $order->first_name = $attendee_first_name;
-                    $order->last_name = $attendee_last_name;
-                    $order->email = $attendee_email;
-                    $order->order_status_id = config('attendize.order_complete');
-                    $order->amount = $ticket_price;
-                    $order->account_id = Auth::user()->account_id;
-                    $order->event_id = $event_id;
-                    $order->save();
 
                     /**
                      * Update qty sold
@@ -342,14 +347,23 @@ class EventAttendeesController extends MyBaseController
                      * Create the attendee
                      */
                     $attendee = new Attendee();
-                    $attendee->first_name = $attendee_first_name;
-                    $attendee->last_name = $attendee_last_name;
-                    $attendee->email = $attendee_email;
+
+                    // Do not include the name on the Ticket
+                    if ($request->has('without_names')) {
+                        $attendee->first_name = '';
+                        $attendee->last_name = '';
+                        $attendee->email = '';
+                    } else {
+                        $attendee->first_name = $attendee_first_name;
+                        $attendee->last_name = $attendee_last_name;
+                        $attendee->email = $attendee_email;
+                    }
+
                     $attendee->event_id = $event_id;
                     $attendee->order_id = $order->id;
                     $attendee->ticket_id = $ticket_id;
                     $attendee->account_id = Auth::user()->account_id;
-                    $attendee->reference_index = 1;
+                    $attendee->reference_index = $num_added;
                     $attendee->save();
 
                     if ($email_attendee == '1') {

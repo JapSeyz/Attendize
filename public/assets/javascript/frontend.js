@@ -4863,7 +4863,7 @@ function setCountdown($element, seconds) {
 
             time = new Date(msLeft);
             mins = time.getUTCMinutes();
-            $element.html('<b>' + mins + '</b> minutter og<b>' + twoDigits(time.getUTCSeconds()) + '</b> sekunder');
+            $element.html('<b>' + mins + '</b> minutter og <b>' + twoDigits(time.getUTCSeconds()) + '</b> sekunder');
             setTimeout(updateTimer, time.getUTCMilliseconds() + 500);
         }
     }
