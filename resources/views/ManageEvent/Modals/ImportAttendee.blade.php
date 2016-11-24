@@ -19,16 +19,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="checkbox custom-checkbox">
-                                        <input type="checkbox" name="without_names" id="without_names" value="1" />
-                                        <label for="without_names">&nbsp;&nbsp;Leave attendee-details blank</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 						<!-- Import -->
                         <div class="row">
                             <div class="col-md-12">
