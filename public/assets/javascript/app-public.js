@@ -221,7 +221,7 @@ function toggleSubmitDisabled($submitButton) {
     $submitButton.data('original-text', $submitButton.val())
             .attr('disabled', true)
             .addClass('disabled')
-            .val('Just a second...');
+            .val('Lige et øjeblik...');
 }
 
 /**
