@@ -92,7 +92,7 @@ Attendees
                                {!!Html::sortable_link('Order Ref.', $sort_by, 'order_reference', $sort_order, ['q' => $q , 'page' => $attendees->currentPage()])!!}
                             </th>
                             <th>
-                                {!!Html::sortable_link('Ticket Ref.', $sort_by, 'ticket_reference', $sort_order, ['q' => $q , 'page' => $attendees->currentPage()])!!}
+                                {!!Html::sortable_link('Ticket Ref.', $sort_by, 'reference_index', $sort_order, ['q' => $q , 'page' => $attendees->currentPage()])!!}
                             </th>
                             <th></th>
                         </tr>

@@ -35,7 +35,7 @@ class EventAttendeesController extends MyBaseController
      */
     public function showAttendees(Request $request, $event_id)
     {
-        $allowed_sorts = ['first_name', 'email', 'ticket_id', 'order_reference'];
+        $allowed_sorts = ['first_name', 'email', 'ticket_id', 'order_reference', 'reference_index'];
 
         $searchQuery = $request->get('q');
         $sort_order = $request->get('sort_order') == 'asc' ? 'asc' : 'desc';
@@ -50,6 +50,7 @@ class EventAttendeesController extends MyBaseController
                 ->where(function ($query) use ($searchQuery) {
                     $query->where('orders.order_reference', 'like', $searchQuery . '%')
                         ->orWhere('attendees.first_name', 'like', $searchQuery . '%')
+                        ->orWhere('attendees.reference_index', 'like', $searchQuery . '%')
                         ->orWhere('attendees.email', 'like', $searchQuery . '%')
                         ->orWhere('attendees.last_name', 'like', $searchQuery . '%');
                 })
