@@ -42,7 +42,7 @@
                             <div class="row">
                                 <div class="col-xs-7">
                                     <h4>Start:</h4>
-                                    <span>{{ $event->start_date->format('m-d H:i') }}</span>
+                                    <span>{{ $event->start_date->format('d-m H:i') }}</span>
 
                                     <h4>Placering:</h4>
                                     <p>{{ $event->venue_name }}</p>
@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="col-xs-5 ticket-center">
                                     <h4>Slut:</h4>
-                                    <span>{{ $event->end_date->format('m-d H:i') }}</span>
+                                    <span>{{ $event->end_date->format('d-m H:i') }}</span>
 
                                 </div>
                             </div>
