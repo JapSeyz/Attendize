@@ -172,6 +172,7 @@ return [
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
         Spatie\Backup\BackupServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
     ],
 
     /*

@@ -7,6 +7,14 @@ namespace App\Models;
 class Sponsor extends \Illuminate\Database\Eloquent\Model
 {
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'on_ticket',
+        'event_id',
+        'id',
+    ];
+
     /**
      * Get the full logo path of the sponsor.
      *

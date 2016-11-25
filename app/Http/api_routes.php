@@ -1,5 +1,22 @@
 <?php
 
+/**
+* ---------
+* Public Api
+* ---------
+**/
+Route::group(['prefix' => 'api/public', 'middleware' => 'cors'], function(){
+    Route::get('sponsors/{event_id}', function($event_id){
+       return response()->json(\App\Models\Sponsor::where('event_id', $event_id)->get());
+    });
+});
+
+
+/**
+* ---------
+* Authenticated API
+* ---------
+**/
 Route::group(['prefix' => 'api', 'middleware' => 'auth:api'], function () {
 
     /*
