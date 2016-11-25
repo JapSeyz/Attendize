@@ -143,7 +143,7 @@
 
                 @if($order_requires_payment)
 
-                <h3>Payment Information</h3>
+                <h3>Betalingsinformation</h3>
 
                 @if($event->enable_offline_payments)
                     <div class="offline_payment_toggle">

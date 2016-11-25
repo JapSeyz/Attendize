@@ -75,7 +75,7 @@ class EventCheckoutController extends Controller
 
         /*
          * Go though the selected tickets and check if they're available
-         * , tot up the price and reserve them to prevent over selling.
+         * to up the price and reserve them to prevent over selling.
          */
 
         $validation_rules = [];
