@@ -165,15 +165,10 @@
                 @if(@$payment_gateway->is_on_site)
                     <div class="online_payment">
                         <div class="row">
-                            <div class="col-xs-12">
-                                <div class="alert alert-warning">Bemærk, vi tager ikke <b>Dankort</b></div>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     {!! Form::label('card-number', 'Kortnummer') !!}
-                                    <input required="required" type="text" autocomplete="off" placeholder="**** **** **** ****" class="form-control card-number" size="20" data-stripe="number">
+                                    <input required="required" type="text" autocomplete="off" class="form-control card-number" size="20" data-stripe="number">
                                 </div>
                             </div>
                         </div>
@@ -200,7 +195,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     {!! Form::label('card-expiry-year', 'Sikkerhedskode') !!}
-                                    <input required="required" placeholder="***" class="form-control card-cvc" data-stripe="cvc">
+                                    <input required="required" class="form-control card-cvc" data-stripe="cvc">
                                 </div>
                             </div>
                         </div>
