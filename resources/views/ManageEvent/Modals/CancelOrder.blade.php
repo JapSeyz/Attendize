@@ -78,7 +78,7 @@
                                             {{$attendee->email}}
                                         </td>
                                         <td>
-                                            {{{$attendee->ticket->title}}}
+                                            {{{$attendee->ticket->title}}}-{{{$attendee->reference_index}}}
                                         </td>
                                     </tr>
                                 @endforeach
