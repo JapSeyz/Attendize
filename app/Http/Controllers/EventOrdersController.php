@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Events\OrderCompletedEvent;
+use App\Jobs\SendOrderTickets;
 use App\Models\Attendee;
 use App\Models\Event;
 use App\Models\Order;
@@ -85,6 +85,27 @@ class EventOrdersController extends MyBaseController
     }
 
     /**
+     * Shows 'Edit Order' modal
+     *
+     * @param Request $request
+     * @param $order_id
+     * @return mixed
+     */
+    public function showEditOrder(Request $request, $order_id)
+    {
+        $order = Order::scope()->find($order_id);
+
+        $data = [
+            'order'     => $order,
+            'event'     => $order->event(),
+            'attendees' => $order->attendees()->withoutCancelled()->get(),
+            'modal_id'  => $request->get('modal_id'),
+        ];
+
+        return view('ManageEvent.Modals.EditOrder', $data);
+    }
+
+    /**
      * Shows 'Cancel Order' modal
      *
      * @param Request $request
@@ -104,6 +125,67 @@ class EventOrdersController extends MyBaseController
 
         return view('ManageEvent.Modals.CancelOrder', $data);
     }
+
+    /**
+     * Resend an entire order
+     *
+     * @param $order_id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resendOrder($order_id)
+    {
+        $order = Order::scope()->find($order_id);
+
+        $this->dispatch(new SendOrderTickets($order));
+
+        return response()->json([
+            'status'      => 'success',
+            'redirectUrl' => '',
+        ]);
+    }
+
+    /**
+     * Cancels an order
+     *
+     * @param Request $request
+     * @param $order_id
+     * @return mixed
+     */
+    public function postEditOrder(Request $request, $order_id)
+    {
+        $rules = [
+            'first_name' => ['required'],
+            'last_name' => ['required'],
+            'email' => ['required', 'email'],
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'   => 'error',
+                'messages' => $validator->messages()->toArray(),
+            ]);
+        }
+
+        $order = Order::scope()->findOrFail($order_id);
+
+        $order->first_name = $request->get('first_name');
+        $order->last_name = $request->get('last_name');
+        $order->email = $request->get('email');
+
+        $order->update();
+
+
+        \Session::flash('message', 'The order has been updated');
+
+        return response()->json([
+            'status'      => 'success',
+            'redirectUrl' => '',
+        ]);
+    }
+
 
     /**
      * Cancels an order
@@ -334,7 +416,7 @@ class EventOrdersController extends MyBaseController
             'email_logo'      => $order->event->organiser->full_logo_path,
         ];
 
-        Mail::send('Emails.messageReceived', $data, function ($message) use ($order, $data) {
+        Mail::send('Emails.messageOrder', $data, function ($message) use ($order, $data) {
             $message->to($order->email, $order->full_name)
                 ->from(config('attendize.outgoing_email_noreply'), $order->event->organiser->name)
                 ->replyTo($order->event->organiser->email, $order->event->organiser->name)
@@ -343,7 +425,7 @@ class EventOrdersController extends MyBaseController
 
         /* Send a copy to the Organiser with a different subject */
         if ($request->get('send_copy') == '1') {
-            Mail::send('Emails.messageReceived', $data, function ($message) use ($order, $data) {
+            Mail::send('Emails.messageOrder', $data, function ($message) use ($order, $data) {
                 $message->to($order->event->organiser->email)
                     ->from(config('attendize.outgoing_email_noreply'), $order->event->organiser->name)
                     ->replyTo($order->event->organiser->email, $order->event->organiser->name)
@@ -372,9 +454,6 @@ class EventOrdersController extends MyBaseController
         $order->order_status_id = 1;
 
         $order->save();
-
-        // Generate and send the Tickets
-        event(new OrderCompletedEvent($order));
 
         session()->flash('message', 'Order Payment Status Successfully Updated');
 
