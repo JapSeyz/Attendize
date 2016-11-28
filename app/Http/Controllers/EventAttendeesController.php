@@ -282,7 +282,7 @@ class EventAttendeesController extends MyBaseController
             $the_file = Excel::load($request->file('attendees_list')->getRealPath(), function ($reader) {
             })->get();
 
-            $totalNum = count($the_file);
+            $total_attendees = count($the_file);
 
 
             /*
@@ -291,9 +291,9 @@ class EventAttendeesController extends MyBaseController
             $ticket_id = $request->get('ticket_id');
             $ticket = Ticket::scope()->find($ticket_id);
             $ticket_price = $ticket->price;
-            $ticket->increment('quantity_sold', $totalNum);
-            $ticket->increment('sales_volume', $ticket_price * $totalNum);
-            $ticket->event->increment('sales_volume', $ticket_price * $totalNum);
+            $ticket->increment('quantity_sold', $total_attendees);
+            $ticket->increment('sales_volume', $ticket_price * $total_attendees);
+            $ticket->event->increment('sales_volume', $ticket_price * $total_attendees);
 
 
             /**
@@ -304,7 +304,7 @@ class EventAttendeesController extends MyBaseController
             $order->last_name = $the_file[0]['last_name'];
             $order->email = $the_file[0]['email'];
             $order->order_status_id = config('attendize.order_complete');
-            $order->amount = $ticket_price * $totalNum;
+            $order->amount = $ticket_price * $total_attendees;
             $order->account_id = Auth::user()->account_id;
             $order->event_id = $event_id;
             $order->save();
@@ -313,8 +313,8 @@ class EventAttendeesController extends MyBaseController
              * Update the event stats
              */
             $event_stats = new EventStats();
-            $event_stats->updateTicketsSoldCount($event_id, $totalNum);
-            $event_stats->updateTicketRevenue($ticket_id, $ticket_price * $totalNum);
+            $event_stats->updateTicketsSoldCount($event_id, $total_attendees);
+            $event_stats->updateTicketRevenue($ticket_id, $ticket_price * $total_attendees);
 
             // Loop through
             foreach ($the_file as $rows) {
@@ -423,7 +423,7 @@ class EventAttendeesController extends MyBaseController
             ]);
         }
 
-        $attendees_to_create = $request->input('attendees_to_create');
+        $attendees_to_create = (int) $request->input('attendees_to_create');
 
         // Ticket Details
         $ticket_id = $request->get('ticket_id');
@@ -837,6 +837,8 @@ class EventAttendeesController extends MyBaseController
         }
 
         $attendee->ticket->decrement('quantity_sold');
+        $attendee->ticket->decrement('sales_volume', $attendee->ticket->price);
+        $attendee->ticket->event->decrement('sales_volume', $attendee->ticket->price);
         $attendee->is_cancelled = 1;
         $attendee->save();
 

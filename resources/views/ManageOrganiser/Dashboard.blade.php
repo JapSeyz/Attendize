@@ -60,7 +60,7 @@
         <div class="col-sm-4">
             <div class="stat-box">
                 <h3>
-                    {{$organiser->attendees->count()}}
+                    {{$organiser->attendees()->withoutCancelled()->count()}}
                 </h3>
             <span>
                 Tickets Sold

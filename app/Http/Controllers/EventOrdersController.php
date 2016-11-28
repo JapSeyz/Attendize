@@ -216,7 +216,7 @@ class EventOrdersController extends MyBaseController
 
         $refund_order = ($request->get('refund_order') === 'on') ? true : false;
         $refund_type = $request->get('refund_type');
-        $refund_amount = round(floatval($request->get('refund_amount')), 2);
+        $refund_amount = round((float) $request->get('refund_amount'), 2);
         $attendees = $request->get('attendees');
         $error_message = false;
 
@@ -291,6 +291,11 @@ class EventOrdersController extends MyBaseController
             foreach ($attendees as $attendee_id) {
                 $attendee = Attendee::scope()->where('id', '=', $attendee_id)->first();
                 $attendee->is_cancelled = 1;
+                $attendee->ticket->decrement('quantity_sold');
+                $attendee->ticket->decrement('sales_volume', $attendee->ticket->price);
+                $order->event->decrement('sales_volume', $attendee->ticket->price);
+                $order->decrement('amount', $attendee->ticket->price);
+
                 $attendee->save();
             }
         }
