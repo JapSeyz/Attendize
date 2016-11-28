@@ -842,6 +842,12 @@ class EventAttendeesController extends MyBaseController
         $attendee->is_cancelled = 1;
         $attendee->save();
 
+        $eventStats = EventStats::where('event_id', $attendee->event_id)->where('date', $attendee->created_at->format('Y-m-d'))->first();
+        if($eventStats){
+            $eventStats->decrement('tickets_sold',  1);
+            $eventStats->decrement('sales_volume',  $attendee->ticket->price);
+        }
+
         $data = [
             'attendee'   => $attendee,
             'email_logo' => $attendee->event->organiser->full_logo_path,

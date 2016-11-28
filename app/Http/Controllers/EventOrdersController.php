@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Jobs\SendOrderTickets;
 use App\Models\Attendee;
 use App\Models\Event;
+use App\Models\EventStats;
 use App\Models\Order;
 use DB;
 use Excel;
@@ -295,6 +296,12 @@ class EventOrdersController extends MyBaseController
                 $attendee->ticket->decrement('sales_volume', $attendee->ticket->price);
                 $order->event->decrement('sales_volume', $attendee->ticket->price);
                 $order->decrement('amount', $attendee->ticket->price);
+
+                $eventStats = EventStats::where('event_id', $attendee->event_id)->where('date', $attendee->created_at->format('Y-m-d'))->first();
+                if($eventStats){
+                    $eventStats->decrement('tickets_sold',  1);
+                    $eventStats->decrement('sales_volume',  $attendee->ticket->price);
+                }
 
                 $attendee->save();
             }
