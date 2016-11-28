@@ -28,4 +28,9 @@ class Sponsor extends \Illuminate\Database\Eloquent\Model
 
         return config('attendize.fallback_organiser_logo_url');
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', 1);
+    }
 }
