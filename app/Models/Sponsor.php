@@ -11,6 +11,7 @@ class Sponsor extends \Illuminate\Database\Eloquent\Model
         'created_at',
         'updated_at',
         'on_ticket',
+        'is_active',
         'event_id',
         'id',
     ];

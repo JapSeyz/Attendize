@@ -7,7 +7,7 @@
 **/
 Route::group(['prefix' => 'api/public', 'middleware' => 'cors'], function(){
     Route::get('sponsors/{event_id}', function($event_id){
-       return response()->json(\App\Models\Sponsor::where('event_id', $event_id)->get());
+       return response()->json(\App\Models\Sponsor::active()->where('event_id', $event_id)->get());
     });
 });
 
