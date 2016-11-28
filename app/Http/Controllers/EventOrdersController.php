@@ -292,6 +292,7 @@ class EventOrdersController extends MyBaseController
             foreach ($attendees as $attendee_id) {
                 $attendee = Attendee::scope()->where('id', '=', $attendee_id)->first();
                 $attendee->is_cancelled = 1;
+
                 $attendee->ticket->decrement('quantity_sold');
                 $attendee->ticket->decrement('sales_volume', $attendee->ticket->price);
                 $order->event->decrement('sales_volume', $attendee->ticket->price);
@@ -299,7 +300,7 @@ class EventOrdersController extends MyBaseController
 
                 $eventStats = EventStats::where('event_id', $attendee->event_id)->where('date', $attendee->created_at->format('Y-m-d'))->first();
                 if($eventStats){
-                    $eventStats->decrement('tickets_sold',  1);
+                    $eventStats->decrement('tickets_sold');
                     $eventStats->decrement('sales_volume',  $attendee->ticket->price);
                 }
 

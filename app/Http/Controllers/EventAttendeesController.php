@@ -844,7 +844,7 @@ class EventAttendeesController extends MyBaseController
 
         $eventStats = EventStats::where('event_id', $attendee->event_id)->where('date', $attendee->created_at->format('Y-m-d'))->first();
         if($eventStats){
-            $eventStats->decrement('tickets_sold',  1);
+            $eventStats->decrement('tickets_sold');
             $eventStats->decrement('sales_volume',  $attendee->ticket->price);
         }
 
