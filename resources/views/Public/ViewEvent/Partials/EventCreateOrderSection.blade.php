@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="alert alert-info" id="countdown-footer">
-                Vær opmærksom på at du kun har <span id='countdown'></span> til at færdiggøre dit køb inden dine reserverede billetter billetter bliver tilgængelige for andre.
+                Vær opmærksom på at du kun har <span id='countdown'></span> til at færdiggøre dit køb inden dine reserverede billetter bliver tilgængelige for andre.
             </div>
         </div>
     </div>
