@@ -21,13 +21,18 @@
                                 $is_free_event = true;
                                 ?>
                                 @foreach($tickets as $ticket)
+
+                                    @if($ticket->sale_status !== config('attendize.ticket_status_on_sale'))
+                                        @continue
+                                    @endif
+
                                     <tr class="ticket" property="offers" typeof="Offer">
                                         <td>
                                 <span class="ticket-title semibold" property="name">
                                     {{$ticket->title}}
                                 </span>
                                             <p class="ticket-descripton mb0 text-muted" property="description">
-                                                {{$ticket->description}}
+                                                {!! nl2br($ticket->description) !!}
                                             </p>
                                         </td>
                                         <td style="width:180px; text-align: right;">
@@ -48,39 +53,17 @@
                                             </div>
                                         </td>
                                         <td style="width:85px;">
-                                            @if($ticket->is_paused)
-                                                <span class="text-danger">
-                                                    Ikke til salg i øjeblikket
-                                                </span>
-                                            @else
-                                                @if($ticket->sale_status === config('attendize.ticket_status_sold_out'))
-                                                    <span class="text-danger" property="availability"
-                                                          content="http://schema.org/SoldOut">
-                                                        Udsolgt
-                                                    </span>
-                                                @elseif($ticket->sale_status === config('attendize.ticket_status_before_sale_date'))
-                                                    <span class="text-danger">
-                                                        Sælges ikke endnu
-                                                    </span>
-                                                @elseif($ticket->sale_status === config('attendize.ticket_status_after_sale_date'))
-                                                    <span class="text-danger">
-                                                        Sælges ikke længere
-                                                    </span>
-                                                @else
-                                                    {!! Form::hidden('tickets[]', $ticket->id) !!}
-                                                    <meta property="availability" content="http://schema.org/InStock">
-                                                    <select name="ticket_{{$ticket->id}}" class="form-control"
-                                                            style="text-align: center">
-                                                        @if ($tickets->count() > 1)
-                                                            <option value="0">0</option>
-                                                        @endif
-                                                        @for($i=$ticket->min_per_person; $i<=$ticket->max_per_person; $i++)
-                                                            <option value="{{$i}}">{{$i}}</option>
-                                                        @endfor
-                                                    </select>
+                                            {!! Form::hidden('tickets[]', $ticket->id) !!}
+                                            <meta property="availability" content="http://schema.org/InStock">
+                                            <select name="ticket_{{$ticket->id}}" class="form-control"
+                                                    style="text-align: center">
+                                                @if ($tickets->count() > 1)
+                                                    <option value="0">0</option>
                                                 @endif
-
-                                            @endif
+                                                @for($i=$ticket->min_per_person; $i<=$ticket->max_per_person; $i++)
+                                                    <option value="{{$i}}">{{$i}}</option>
+                                                @endfor
+                                             </select>
                                         </td>
                                     </tr>
                                 @endforeach

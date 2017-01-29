@@ -50,7 +50,7 @@
 
                         <div class="form-group more-options">
                             {!! Form::label('description', 'Ticket Description', array('class'=>'control-label')) !!}
-                            {!!  Form::text('description', Input::old('description'),
+                            {!!  Form::textarea('description', Input::old('description'),
                                         array(
                                         'class'=>'form-control'
                                         ))  !!}
