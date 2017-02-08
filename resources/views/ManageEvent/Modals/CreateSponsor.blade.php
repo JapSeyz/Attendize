@@ -11,14 +11,30 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
+
                         <div class="form-group">
                             {!! Form::label('name', 'Name', array('class'=>'control-label required')) !!}
                             {!!  Form::text('name', Input::old('name'),
-                                        array(
-                                        'class'=>'form-control',
-                                        'placeholder'=>'Company ApS'
-                                        ))  !!}
+                                array(
+                                'class'=>'form-control',
+                                'placeholder'=>'Company ApS'
+                                ))  !!}
                         </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    {!! Form::label('url', 'URL', array('class'=>'control-label ')) !!}
+                                    {!!  Form::text('url', Input::old('url'),
+                                         array(
+                                         'class'=>'form-control',
+                                         'placeholder'=>'https://ikastmusikliv.dk'
+                                         ))  !!}
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="row">
                             <div class="col-sm-12">
@@ -34,6 +50,16 @@
                                     <div class="well well-sm well-small">
                                         {!! Form::label('on_ticket', 'On Ticket?', array('class'=>'control-label ')) !!}
                                         {!! Form::checkbox('on_ticket', 1) !!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="well well-sm well-small">
+                                        {!! Form::label('is_active', 'Active?', array('class'=>'control-label ')) !!}
+                                        {!! Form::checkbox('is_active', 1, true) !!}
                                     </div>
                                 </div>
                             </div>

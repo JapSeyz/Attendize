@@ -3,9 +3,7 @@ var checkinApp = new Vue({
     data: {
         attendees: [],
         searchTerm: '',
-        searchResultsCount: 0,
         showScannerModal: false,
-        workingAway: false,
         isInit: false,
         isScanning: false,
         videoElement: $('video#scannerVideo')[0],
@@ -36,14 +34,6 @@ var checkinApp = new Vue({
             });
         },
         toggleCheckin: function (attendee) {
-
-            if(this.workingAway) {
-                return;
-            }
-            this.workingAway = true;
-            var that = this;
-
-
             var checkinData = {
                 checking: attendee.has_arrived ? 'out' : 'in',
                 attendee_id: attendee.id,
@@ -55,13 +45,8 @@ var checkinApp = new Vue({
                         alert(res.data.message);
                     }
                     attendee.has_arrived = checkinData.checking == 'out' ? 0 : 1;
-                    that.workingAway = false;
-                } else {
-                    /* @todo handle error*/
-                    that.workingAway = false;
                 }
             });
-
         },
         clearSearch: function () {
             this.searchTerm = '';
@@ -115,7 +100,7 @@ var checkinApp = new Vue({
                 that.stream = stream;
 
                 if (window.webkitURL) {
-                    that.videoElement.src = window.webkitURL.createObjectURL(stream);
+                    that.videoElement.src = window.URL.createObjectURL(stream);
                 } else {
                     that.videoElement.mozSrcObject = stream;
                 }

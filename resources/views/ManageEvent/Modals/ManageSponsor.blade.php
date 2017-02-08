@@ -23,6 +23,19 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
+                                    {!! Form::label('url', 'URL', array('class'=>'control-label ')) !!}
+                                    {!!  Form::text('url', $sponsor->url,
+                                         array(
+                                         'class'=>'form-control',
+                                         'placeholder'=>'https://ikastmusikliv.dk'
+                                         ))  !!}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
                                     {!! Form::label('sponsor_logo', 'Sponsor Logo', array('class'=>'control-label ')) !!}
                                     {!! Form::styledFile('sponsor_logo') !!}
                                 </div>

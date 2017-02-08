@@ -10,8 +10,6 @@ use Validator;
 
 class EventSponsorController extends MyBaseController
 {
-    /* TODO: PROTECT THE SPONSORS FROM DELETION BY UNAUTHORIZED USERS */
-
     /**
      * Show the Sponsor Overview Page
      *
@@ -48,6 +46,7 @@ class EventSponsorController extends MyBaseController
      * @param $event_id
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
      */
     public function postCreateSponsor(Request $request, $event_id)
     {
@@ -93,7 +92,7 @@ class EventSponsorController extends MyBaseController
      */
     public function postEditSponsor(Request $request, $event_id, $sponsor_id)
     {
-        $this->persistSponsor($request, $sponsor_id);
+        $this->persistSponsor($request, $sponsor_id, $event_id);
 
         return response()->json([
             'status' => 'success',
@@ -117,7 +116,10 @@ class EventSponsorController extends MyBaseController
      */
     public function postDeleteSponsor(Request $request, $event_id, $sponsor_id)
     {
-        Sponsor::where('id', $sponsor_id)->delete();
+        // Validate that the user has Access to the Event in question
+        $event = Event::scope()->findOrFail($event_id);
+
+        $event->sponsors()->where('id', $sponsor_id)->delete();
 
         return response()->json([
             'status' => 'success',
@@ -136,11 +138,13 @@ class EventSponsorController extends MyBaseController
      * @param null|int $event_id
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Symfony\Component\HttpFoundation\File\Exception\FileException
      */
-    private function persistSponsor(Request $request, $sponsor_id = null, $event_id = null)
+    private function persistSponsor(Request $request, $sponsor_id = null, $event_id)
     {
         $rules = [
             'name' => 'required|max:250',
+            'url' => 'url',
             'sponsor_logo' => 'image',
             'on_ticket' => 'boolean',
             'is_active' => 'boolean',
@@ -155,12 +159,14 @@ class EventSponsorController extends MyBaseController
             ]);
         }
 
+        // Validate that the user has Access to the Event in question
+        $event = Event::scope()->findOrFail($event_id);
+
         if ($sponsor_id) {
-            $sponsor = Sponsor::findOrFail($sponsor_id);
+            $sponsor = $event->sponsors()->where('id', $sponsor_id)->first();
         } else {
             $sponsor = new Sponsor;
 
-            /* TODO: Protect this by checking which events the authenticated users can manage */
             $sponsor->event_id = $event_id;
         }
 
@@ -176,6 +182,7 @@ class EventSponsorController extends MyBaseController
         $sponsor->on_ticket = $request->has('on_ticket');
         $sponsor->is_active = $request->has('is_active');
         $sponsor->name = $request->get('name');
+        $sponsor->url = $request->get('url');
 
         $sponsor->save();
     }

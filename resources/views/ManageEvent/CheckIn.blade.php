@@ -39,23 +39,18 @@
             <div class="col-md-12">
                 <div class="attendee_input_wrap">
                     <div class="input-group">
-                                  <span class="input-group-btn">
-                                 <button @click="showQrModal" title="Scan QR Code" class="btn btn-default qr_search" type="button"><i
-                                              class="ico-qrcode"></i></button>
-                                </span>
+                          <span class="input-group-btn">
+                         <button @click="showQrModal" title="Scan QR Code" class="btn btn-default qr_search" type="button"><i
+                                      class="ico-qrcode"></i></button>
+                        </span>
                         {!!  Form::text('attendees_q', null, [
-                    'class' => 'form-control attendee_search',
-                            'id' => 'search',
-                            'v-model' => 'searchTerm',
-                            '@keyup' => 'fetchAttendees | debounce 500',
-                            '@keyup.esc' => 'clearSearch',
-                            'placeholder' => 'Search by Attendee Name, Order Reference, Attendee Reference... '
-                ])  !!}
-
-
+                                'class' => 'form-control attendee_search',
+                                'id' => 'search',
+                                'v-model' => 'searchTerm',
+                                '@keyup.esc' => 'clearSearch',
+                                'placeholder' => 'Search by Attendee Name, Order Reference, Attendee Reference... '
+                            ])  !!}
                     </div>
-
-                    <span v-if='searchTerm' @click='clearSearch' class="clearSearch ico-cancel"></span>
                 </div>
             </div>
         </div>
@@ -68,25 +63,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="attendee_list">
-                    <h4 class="attendees_title">
-                        <span v-if="!searchTerm">
-                            All Attendees
-                        </span>
-                        <span v-else v-cloak>
-                            @{{searchResultsCount}} @{{searchResultsCount | pluralize 'Result'}}
-                            for <b>@{{ searchTerm }}</b>
-                        </span>
-                    </h4>
 
-                    <div style="margin: 10px;" v-if="searchResultsCount == 0 && searchTerm" class="alert alert-info"
-                         v-cloak>
-                        No Attendees matching <b>@{{ searchTerm }}</b>
-                    </div>
-
-                    <ul v-if="searchResultsCount > 0" class="list-group" id="attendee_list" v-cloak>
-                        <li
-                        @click="toggleCheckin(attendee)"
-                        v-for="attendee in attendees"
+                    <ul class="list-group" id="attendee_list" v-cloak>
+                        <li @click.stop.prevent="toggleCheckin(attendee)"
+                        v-for="attendee in attendees | filterBy searchTerm"
                         class="at list-group-item"
                         :class = "{arrived : attendee.has_arrived || attendee.has_arrived == '1'}"
                         >
@@ -105,16 +85,6 @@
         </div>
     </div>
 </section>
-
-<footer class="hide">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-
-            </div>
-        </div>
-    </div>
-</footer>
 
 {{--QR Modal--}}
 <div role="dialog" id="QrModal" class="scannerModal" v-show="showScannerModal" v-cloak>
