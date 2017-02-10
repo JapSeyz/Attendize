@@ -31,6 +31,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'auth:api'], function () {
      * Events
      * ---------------
      */
+    Route::get('event/attendees', 'API\AppController@attendees');
     Route::resource('events', 'API\EventsApiController');
 
 
