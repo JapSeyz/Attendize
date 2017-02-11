@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\AttendeeStatusUpdate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /*
@@ -43,8 +44,14 @@ class Attendee extends MyBaseModel
     {
         parent::boot();
 
-        static::creating(function ($order) {
-            $order->private_reference_number = str_pad(rand(0, pow(10, 9) - 1), 9, '0', STR_PAD_LEFT);
+        static::creating(function ($attendee) {
+            $attendee->private_reference_number = str_pad(rand(0, pow(10, 9) - 1), 9, '0', STR_PAD_LEFT);
+        });
+
+        static::updated(function ($attendee) {
+            if($attendee->isDirty('has_arrived')) {
+                event(new AttendeeStatusUpdate($attendee));
+            }
         });
     }
 

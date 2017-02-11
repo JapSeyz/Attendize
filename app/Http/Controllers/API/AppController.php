@@ -48,12 +48,20 @@ class AppController extends ApiBaseController
      *
      * @return bool
      */
-    public function checkin(Request $request)
+    public function checkIn(Request $request)
     {
         $attendee = Attendee::where('event_id', env('CURRENT_EVENT'))->where('private_reference_number', $request->code)->first();
 
+        if(!$attendee){
+            return response()->json([
+                'title' => 'Ukendt Kode',
+                'body' => 'Billetten tilhører ikke Musikliv',
+            ], 400);
+        }
+
         if($attendee->has_arrived){
-            $arrivalTime = Carbon::parse($attendee->arrival_time)->format('H:i');
+            $arrivalTime = Carbon::parse($attendee->arrival_time)->format('H:i - d/m');
+
             return response()->json([
                 'title' => 'Allerede tjekket ind',
                 'body' => $arrivalTime,
