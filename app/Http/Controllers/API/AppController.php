@@ -38,7 +38,8 @@ class AppController extends ApiBaseController
         }
 
         return response()->json([
-            'message' => $message
+            'title' => $message,
+            'body' => $attendee->fullName,
         ]);
     }
 
@@ -53,7 +54,10 @@ class AppController extends ApiBaseController
 
         if($attendee->has_arrived){
             $arrivalTime = Carbon::parse($attendee->arrival_time)->format('H:i');
-            abort(400, 'Brugeren tjekkede ind kl. '.$arrivalTime);
+            return response()->json([
+                'title' => 'Allerede tjekket ind',
+                'body' => $arrivalTime,
+            ], 400);
         }
 
         $attendee->has_arrived = 1;
@@ -62,7 +66,8 @@ class AppController extends ApiBaseController
         $attendee->save();
 
         return response()->json([
-            'message' => 'Brugeren er nu tjekket ind',
+            'title' => 'Brugeren er nu tjekket ind',
+            'body' => $attendee->fullName,
             'id' => $attendee->id,
         ]);
     }
