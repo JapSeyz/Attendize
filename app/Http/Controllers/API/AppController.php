@@ -16,4 +16,18 @@ class AppController extends ApiBaseController
     {
         return Attendee::scope($this->account_id)->where('event_id', env('CURRENT_EVENT'))->get();
     }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool
+     */
+    public function attendee(Request $request)
+    {
+        $attendee =  Attendee::scope($this->account_id)->where('event_id', env('CURRENT_EVENT'))->where('id', $request->attendee_id)->first();
+        $attendee->has_arrived = $request->has_arrived;
+        $attendee->arrival_time = $request->arrival_time;
+
+        return $attendee->save();
+    }
 }
