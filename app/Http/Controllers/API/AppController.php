@@ -29,6 +29,8 @@ class AppController extends ApiBaseController
         $attendee->has_arrived = $request->has_arrived;
         $attendee->arrival_time = $request->arrival_time;
 
+        $attendee->save();
+
         return response()->json([
             'message' => 'Brugeren er opdateret'
         ]);
