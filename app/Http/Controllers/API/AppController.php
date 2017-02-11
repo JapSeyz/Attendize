@@ -24,7 +24,9 @@ class AppController extends ApiBaseController
      */
     public function attendee(Request $request)
     {
-        \Log::debug($request->all());
+        return response()->json([
+            'data' => $request->all()
+        ]);
 
         $attendee = Attendee::where('event_id', env('CURRENT_EVENT'))->where('id', $request->attendee_id)->first();
         $attendee->has_arrived = $request->has_arrived;
