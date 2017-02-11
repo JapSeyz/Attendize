@@ -32,7 +32,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'auth:api'], function () {
      * ---------------
      */
     Route::get('event/attendees', 'API\AppController@attendees');
-    Route::get('event/attendee', 'API\AppController@attendee');
+    Route::post('event/attendee', 'API\AppController@attendee');
 
     Route::resource('events', 'API\EventsApiController');
 
