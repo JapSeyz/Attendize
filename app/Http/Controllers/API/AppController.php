@@ -31,8 +31,13 @@ class AppController extends ApiBaseController
 
         $attendee->save();
 
+        $message = 'Brugeren er nu tjekket ind';
+        if(! $request->has_arrived){
+            $message = 'Brugeren er nu tjekket ud';
+        }
+
         return response()->json([
-            'message' => 'Brugeren er opdateret'
+            'message' => $message
         ]);
     }
 }
