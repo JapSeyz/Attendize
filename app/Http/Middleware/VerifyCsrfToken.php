@@ -9,6 +9,7 @@ class VerifyCsrfToken extends BaseVerifier
 {
     protected $except = [
         'install/*',
+        'api/event/*'
     ];
 
     /**
