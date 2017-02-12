@@ -60,7 +60,7 @@ class AppController extends ApiBaseController
         }
 
         if($attendee->has_arrived){
-            $arrivalTime = Carbon::parse($attendee->arrival_time)->format('H:i - d/m');
+            $arrivalTime = $attendee->arrival_time->format('H:i - d/m');
 
             return response()->json([
                 'title' => 'Allerede tjekket ind',

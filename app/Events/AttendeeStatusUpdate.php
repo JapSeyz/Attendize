@@ -13,7 +13,6 @@ class AttendeeStatusUpdate extends Event implements ShouldBroadcast
 
     public $id;
     public $hasArrived;
-    public $arrivalTime;
 
     /**
      * Create a new event instance.
@@ -22,9 +21,8 @@ class AttendeeStatusUpdate extends Event implements ShouldBroadcast
      */
     public function __construct(Attendee $attendee)
     {
-        $this->id = $attendee->id;
-        $this->hasArrived = $attendee->has_arrived;
-        $this->arrivalTime = $attendee->arrival_time;
+        $this->id = (int) $attendee->id;
+        $this->hasArrived = (bool) $attendee->has_arrived;
     }
 
     /**
