@@ -36,6 +36,10 @@ class Attendee extends MyBaseModel
         'arrival_time'
     ];
 
+    protected $appends = [
+        'checkin_date'
+    ];
+
     /**
      * Generate a private reference number for the attendee. Use for checking in the attendee.
      *
@@ -113,6 +117,16 @@ class Attendee extends MyBaseModel
     public function getReferenceAttribute()
     {
         return $this->order->order_reference . '-' . $this->reference_index;
+    }
+
+    /**
+     * Get the attendee checkIn Date
+     *
+     * @return string
+     */
+    public function getCheckinDateAttribute()
+    {
+        return $this->arrival_time ? $this->arrival_time->format('H:i d/m') : '';
     }
 
     /**
