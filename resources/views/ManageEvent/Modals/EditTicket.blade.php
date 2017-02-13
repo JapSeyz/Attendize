@@ -91,6 +91,16 @@
 
                         </div>
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="custom-checkbox">
+                                {!! Form::checkbox('is_purchasable_in_app', null, null, ['id' => 'is_purchasable_in_app']) !!}
+                                {!! Form::label('is_purchasable_in_app', 'Purchasable from the app?', array('class'=>' control-label')) !!}
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
                 <a href="javascript:void(0);" class="show-more-options">
                     More Options

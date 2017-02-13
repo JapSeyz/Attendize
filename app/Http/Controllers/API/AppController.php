@@ -3,6 +3,7 @@
 namespace app\Http\Controllers\API;
 
 use App\Models\Attendee;
+use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -78,5 +79,15 @@ class AppController extends ApiBaseController
             'body' => $attendee->fullName,
             'id' => $attendee->id,
         ]);
+    }
+
+    /**
+     * Tickets to sell at the Entrance
+     *
+     * @return mixed
+     */
+    public function tickets()
+    {
+        return Ticket::where('is_purchasable_in_app', 1)->orderBy('sort_order')->get();
     }
 }
