@@ -90,4 +90,54 @@ class AppController extends ApiBaseController
     {
         return Ticket::where('is_purchasable_in_app', 1)->orderBy('sort_order')->get();
     }
+
+    public function purchase(Request $request)
+    {
+        $ticket_id = $request->ticket_id;
+        $ticket = Ticket::findOrFail($ticket_id);
+
+        $order = new Order;
+        $order->account_id = 1;
+        $order->order_status_id = 1;
+        $order->first_name = auth()->user()->first_name;
+        $order->last_name = auth()->user()->last_name;
+        $order->email = auth()->user()->email;
+        $order->amount = $ticket->price;
+        $order->event_id = env('CURRENT_EVENT');
+        $order->is_payment_received = 1;
+        $order->save();
+
+
+        $attendee = new Attendee;
+        $attendee->order_id = $order->id;
+        $attendee->event_id = $order->event_id;
+        $attendee->ticket_id = $ticket_id;
+
+        $attendee->first_name = 'Indgang';
+        $attendee->last_name = '';
+        $attendee->email = '';
+        $attendee->has_arrived = 1;
+        $attendee->arrival_time = date('Y-m-d H:i:s');
+        $attendee->reference_index = 1;
+        $attendee->save();
+
+        return response()->json([
+            'title' => 'Billetten er blevet købt',
+            'body' => $ticket->title,
+            'id' => $attendee->id,
+        ]);
+    }
+
+    public function cancelPurchase(Request $request)
+    {
+        $attende = Attendee::findOrFail($request->attendee_id);
+
+        $attende->order()->delete();
+        $attende->delete();
+
+        return response()->json([
+            'title' => 'Billetten er fortrudt',
+            'body' => '',
+        ]);
+    }
 }
