@@ -35,7 +35,7 @@ Route::group(['prefix' => 'api/public', 'middleware' => 'cors'], function(){
     Route::get('event/tickets', 'API\AppController@tickets');
     Route::post('event/attendee', 'API\AppController@attendee');
     Route::post('event/checkin', 'API\AppController@checkIn');
-    Route::post('event/purchase', 'API\AppController@purhcase');
+    Route::post('event/purchase', 'API\AppController@purchase');
     Route::post('event/cancel_purchase', 'API\AppController@cancelPurchase');
 
     Route::resource('events', 'API\EventsApiController');
