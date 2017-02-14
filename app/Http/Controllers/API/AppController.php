@@ -114,7 +114,7 @@ class AppController extends ApiBaseController
         $attendee->order_id = $order->id;
         $attendee->event_id = $order->event_id;
         $attendee->ticket_id = $ticket_id;
-
+        $attendee->account_id = 1;
         $attendee->first_name = 'Indgang';
         $attendee->last_name = '';
         $attendee->email = '';
