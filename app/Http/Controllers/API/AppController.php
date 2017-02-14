@@ -94,15 +94,16 @@ class AppController extends ApiBaseController
 
     public function purchase(Request $request)
     {
+        $user = auth()->guard('api')->user();
         $ticket_id = $request->ticket_id;
         $ticket = Ticket::findOrFail($ticket_id);
 
         $order = new Order;
         $order->account_id = 1;
         $order->order_status_id = 1;
-        $order->first_name = auth()->user()->first_name;
-        $order->last_name = auth()->user()->last_name;
-        $order->email = auth()->user()->email;
+        $order->first_name = $user->first_name;
+        $order->last_name = $user->last_name;
+        $order->email = $user->email;
         $order->amount = $ticket->price;
         $order->event_id = env('CURRENT_EVENT');
         $order->is_payment_received = 1;
