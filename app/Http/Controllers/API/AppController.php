@@ -3,6 +3,7 @@
 namespace app\Http\Controllers\API;
 
 use App\Models\Attendee;
+use App\Models\Order;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
