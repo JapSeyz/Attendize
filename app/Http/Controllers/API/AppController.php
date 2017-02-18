@@ -112,7 +112,7 @@ class AppController extends ApiBaseController
         $order->order_status_id = 1;
         $order->first_name = $user->first_name;
         $order->last_name = $user->last_name;
-        $order->email = 'Indgang';
+        $order->email = 'Indgang@ikastmusikliv.dk';
         $order->amount = $ticket->price;
         $order->event_id = env('CURRENT_EVENT');
         $order->is_payment_received = 1;
