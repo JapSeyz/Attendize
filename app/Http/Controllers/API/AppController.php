@@ -143,8 +143,9 @@ class AppController extends ApiBaseController
     {
         $order = Order::findOrFail($request->order_id);
 
+        $order->attendees()->delete();
         $order->delete();
-        
+
         return response()->json([
             'title' => 'Billetten er fortrudt',
             'body' => '',
