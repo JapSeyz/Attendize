@@ -13,7 +13,7 @@ Route::group(['prefix' => 'api/public', 'middleware' => 'cors'], function(){
 
 // User Authentication
 Route::group(['prefix' => 'api'], function(){
-    Route::post('authenticate', 'API\AppController@authenticate');
+    Route::post('authenticate', 'API\AuthController@authenticate');
 });
 
 

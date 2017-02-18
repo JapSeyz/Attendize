@@ -11,27 +11,6 @@ use Illuminate\Http\Request;
 class AppController extends ApiBaseController
 {
 
-    public function authenticate(Request $request)
-    {
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
-
-        if (auth()->attempt($credentials)) {
-            return response()->json([
-                'title' => 'Success',
-                'body' => 'Du er nu logget ind',
-                'api_key' => auth()->user()->api_token,
-            ]);
-        }
-
-        return response()->json([
-            'title' => 'Brugeren blev ikke fundet',
-            'body' => 'Prøv igen',
-        ],401);
-    }
-
     /**
      * @param Request $request
      *
