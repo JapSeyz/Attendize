@@ -52,12 +52,21 @@ class AppController extends ApiBaseController
      */
     public function checkIn(Request $request)
     {
-        $attendee = Attendee::where('event_id', env('CURRENT_EVENT'))->where('private_reference_number', $request->code)->first();
+        $attendee = Attendee::where('event_id', env('CURRENT_EVENT'))
+            ->where('private_reference_number', $request->code)
+            ->first();
 
         if(!$attendee){
             return response()->json([
                 'title' => 'Ukendt Kode',
                 'body' => 'Billetten tilhører ikke Musikliv',
+            ], 400);
+        }
+
+        if($attendee->is_cancelled){
+            return response()->json([
+                'title' => 'Ugyldig Billet',
+                'body' => 'Denne billet er ikke gyldig',
             ], 400);
         }
 
@@ -126,7 +135,7 @@ class AppController extends ApiBaseController
         return response()->json([
             'title' => 'Billetten er blevet købt',
             'body' => $ticket->title,
-            'id' => $attendee->id,
+            'order_id' => $order->id,
         ]);
     }
 
