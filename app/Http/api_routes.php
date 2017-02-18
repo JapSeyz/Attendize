@@ -11,13 +11,18 @@ Route::group(['prefix' => 'api/public', 'middleware' => 'cors'], function(){
     });
 });
 
+// User Authentication
+Route::group(['prefix' => 'api'], function(){
+    Route::post('authenticate', 'API\AppController@authenticate');
+});
+
 
 /**
 * ---------
 * Authenticated API
 * ---------
 **/
-    Route::group(['prefix' => 'api', 'middleware' => 'auth:api'], function () {
+Route::group(['prefix' => 'api', 'middleware' => 'auth:api'], function () {
 
     /*
      * ---------------
@@ -73,6 +78,4 @@ Route::group(['prefix' => 'api/public', 'middleware' => 'cors'], function(){
             'Hello' => Auth::guard('api')->user()->full_name . '!'
         ]);
     });
-
-
 });

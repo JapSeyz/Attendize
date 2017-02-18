@@ -11,8 +11,30 @@ use Illuminate\Http\Request;
 class AppController extends ApiBaseController
 {
 
+    public function authenticate(Request $request)
+    {
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+        ];
+
+        if (auth()->attempt($credentials)) {
+            return response()->json([
+                'title' => 'Success',
+                'body' => 'Du er nu logget ind',
+                'api_key' => auth()->user()->api_token,
+            ]);
+        }
+
+        return response()->json([
+            'title' => 'Brugeren blev ikke fundet',
+            'body' => 'Prøv igen',
+        ],401);
+    }
+
     /**
      * @param Request $request
+     *
      * @return mixed
      */
     public function attendees(Request $request)
@@ -35,7 +57,7 @@ class AppController extends ApiBaseController
         $attendee->save();
 
         $message = 'Brugeren er nu tjekket ind';
-        if(! $request->has_arrived){
+        if (!$request->has_arrived) {
             $message = 'Brugeren er nu tjekket ud';
         }
 
@@ -56,21 +78,21 @@ class AppController extends ApiBaseController
             ->where('private_reference_number', $request->code)
             ->first();
 
-        if(!$attendee){
+        if (!$attendee) {
             return response()->json([
                 'title' => 'Ukendt Kode',
                 'body' => 'Billetten tilhører ikke Musikliv',
             ], 400);
         }
 
-        if($attendee->is_cancelled){
+        if ($attendee->is_cancelled) {
             return response()->json([
                 'title' => 'Ugyldig Billet',
                 'body' => 'Denne billet er ikke gyldig',
             ], 400);
         }
 
-        if($attendee->has_arrived){
+        if ($attendee->has_arrived) {
             $arrivalTime = $attendee->arrival_time->format('H:i - d/m');
 
             return response()->json([
