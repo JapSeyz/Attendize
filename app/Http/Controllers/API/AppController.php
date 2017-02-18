@@ -141,11 +141,10 @@ class AppController extends ApiBaseController
 
     public function cancelPurchase(Request $request)
     {
-        $attende = Attendee::findOrFail($request->attendee_id);
+        $order = Order::findOrFail($request->order_id);
 
-        $attende->order()->delete();
-        $attende->delete();
-
+        $order->delete();
+        
         return response()->json([
             'title' => 'Billetten er fortrudt',
             'body' => '',
