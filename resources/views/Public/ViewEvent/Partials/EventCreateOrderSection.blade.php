@@ -143,7 +143,8 @@
 
                 @if($order_requires_payment)
 
-                <h3>Betalingsinformation</h3>
+                <h3>Betalingsinformation <img class="pull-right" src="/assets/images/public/EventPage/credit-card-logos.png"></h3>
+                <div class="clearfix"></div>
 
                 @if($event->enable_offline_payments)
                     <div class="offline_payment_toggle">
