@@ -68,6 +68,40 @@
                 </div>
 
                 <div class="row more-options">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {!! Form::label('valid_from', 'Gyldig fra', ['class'=>' control-label']) !!}
+
+                            {!!  Form::text('valid_from', $ticket->getFormattedDate('valid_from'),
+                                [
+                                    'class' => 'form-control start-valid hasDatepicker',
+                                    'data-field' => 'datetime',
+                                    'data-startend' => 'start-valid',
+                                    'data-startendelem' => '.end-valid',
+                                    'readonly' => ''
+                                ]) !!}
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            {!!  Form::label('valid_to', 'Gyldig Til',
+                                        [
+                                    'class'=>' control-label '
+                                ])  !!}
+                            {!!  Form::text('valid_to', $ticket->getFormattedDate('valid_to'),
+                                [
+                                    'class' => 'form-control end-valid hasDatepicker',
+                                    'data-field' => 'datetime',
+                                    'data-startend' => 'end-valid',
+                                    'data-startendelem' => '.start-valid',
+                                    'readonly' => ''
+                                ])  !!}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row more-options">
                     <div class="col-md-6">
                         <div class="form-group">
                             {!! Form::label('min_per_person', 'Minimum Tickets Per Order', ['class'=>' control-label']) !!}

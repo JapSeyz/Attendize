@@ -58,20 +58,6 @@
                         class='loadModal btn btn-success' type="button"><i class="ico-ticket"></i> Create Ticket
                 </button>
             </div>
-            @if(false)
-                <div class="btn-group btn-group-responsive ">
-                    <button data-modal-id='TicketQuestions'
-                            data-href="{{route('showTicketQuestions', array('event_id'=>$event->id))}}" type="button"
-                            class="loadModal btn btn-success">
-                        <i class="ico-question"></i> Questions
-                    </button>
-                </div>
-                <div class="btn-group btn-group-responsive">
-                    <button type="button" class="btn btn-success">
-                        <i class="ico-tags"></i> Coupon Codes
-                    </button>
-                </div>
-            @endif
         </div>
         <!--/ Toolbar -->
     </div>

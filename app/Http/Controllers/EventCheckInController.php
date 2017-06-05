@@ -96,6 +96,20 @@ class EventCheckInController extends MyBaseController
 
         $attendee = Attendee::scope()->find($attendee_id);
 
+        // Make sure that the ticket is valid
+        if($attendee->ticket->valid_from || !$attendee->ticket->valid_to){
+            $today = date('Y-m-d H:i:s')
+            if($attendee->ticket->valid_from > $today || $attendee->ticket->valid_to < $today){
+                \Log::debug('The attendee' . $attendee->name . ' (' . $attendee->id . '), tried to use a ticket outside its valid-time');
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Billetten er ikke gyldig på dette tidspunkt',
+                    'checked' => $checking,
+                    'id'      => $attendee->id,
+                ]);
+            }
+        }
+
         /*
          * Ugh
          */

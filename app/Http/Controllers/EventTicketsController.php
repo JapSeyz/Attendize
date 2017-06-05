@@ -105,6 +105,12 @@ class EventTicketsController extends MyBaseController
             $request->get('start_sale_date')) : null;
         $ticket->end_sale_date = $request->get('end_sale_date') ? Carbon::createFromFormat('d-m-Y H:i',
             $request->get('end_sale_date')) : null;
+
+       $ticket->valid_from = $request->get('valid_from') ? Carbon::createFromFormat('d-m-Y H:i',
+           $request->get('valid_from')) : null;
+       $ticket->valid_to = $request->get('valid_to') ? Carbon::createFromFormat('d-m-Y H:i',
+           $request->get('valid_to')) : null;
+
         $ticket->price = $request->get('price');
         $ticket->min_per_person = $request->get('min_per_person');
         $ticket->max_per_person = $request->get('max_per_person');
@@ -242,6 +248,12 @@ class EventTicketsController extends MyBaseController
             $request->get('start_sale_date')) : null;
         $ticket->end_sale_date = $request->get('end_sale_date') ? Carbon::createFromFormat('d-m-Y H:i',
             $request->get('end_sale_date')) : null;
+
+        $ticket->valid_from = $request->get('valid_from') ? Carbon::createFromFormat('d-m-Y H:i',
+            $request->get('valid_from')) : null;
+        $ticket->valid_to = $request->get('valid_to') ? Carbon::createFromFormat('d-m-Y H:i',
+            $request->get('valid_to')) : null;
+
         $ticket->description = $request->get('description');
         $ticket->min_per_person = $request->get('min_per_person');
         $ticket->max_per_person = $request->get('max_per_person');

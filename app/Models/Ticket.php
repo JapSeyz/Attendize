@@ -14,11 +14,13 @@ class Ticket extends MyBaseModel
      * @var array $rules
      */
     public $rules = [
-        'title'              => ['required'],
-        'price'              => ['required', 'numeric', 'min:0'],
-        'start_sale_date'    => ['date'],
-        'end_sale_date'      => ['date', 'after:start_sale_date'],
-        'quantity_available' => ['integer', 'min:0'],
+    'title'              => ['required'],
+    'price'              => ['required', 'numeric', 'min:0'],
+    'start_sale_date'    => ['date'],
+    'end_sale_date'      => ['date', 'after:start_sale_date'],
+    'quantity_available' => ['integer', 'min:0'],
+    'valid_from' => ['date'],
+    'valid_to' => ['date', 'after:valid_from'],
     ];
     /**
      * The validation error messages.
@@ -26,9 +28,9 @@ class Ticket extends MyBaseModel
      * @var array $messages
      */
     public $messages = [
-        'price.numeric'              => 'The price must be a valid number (e.g 12.50)',
-        'title.required'             => 'You must at least give a title for your ticket. (e.g Early Bird)',
-        'quantity_available.integer' => 'Please ensure the quantity available is a number.',
+    'price.numeric'              => 'The price must be a valid number (e.g 12.50)',
+    'title.required'             => 'You must at least give a title for your ticket. (e.g Early Bird)',
+    'quantity_available.integer' => 'Please ensure the quantity available is a number.',
     ];
     protected $perPage = 10;
 
@@ -86,7 +88,7 @@ class Ticket extends MyBaseModel
      */
     public function getDates()
     {
-        return ['created_at', 'updated_at', 'start_sale_date', 'end_sale_date'];
+        return ['created_at', 'updated_at', 'start_sale_date', 'end_sale_date', 'valid_from', 'valid_to'];
     }
 
     /**
@@ -111,9 +113,9 @@ class Ticket extends MyBaseModel
     public function getQuantityReservedAttribute()
     {
         $reserved_total = \DB::table('reserved_tickets')
-            ->where('ticket_id', $this->id)
-            ->where('expires', '>', \Carbon::now())
-            ->sum('quantity_reserved');
+        ->where('ticket_id', $this->id)
+        ->where('expires', '>', \Carbon::now())
+        ->sum('quantity_reserved');
 
         return $reserved_total;
     }
