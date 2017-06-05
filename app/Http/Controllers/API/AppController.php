@@ -36,14 +36,14 @@ class AppController extends ApiBaseController
         $attendee->save();
 
         $message = 'Brugeren er nu tjekket ind';
-        if (!$request->has_arrived) {
+        if ( ! $request->has_arrived) {
             $message = 'Brugeren er nu tjekket ud';
         }
 
         return response()->json([
             'title' => $message,
             'body' => $attendee->fullName,
-            ]);
+        ]);
     }
 
     /**
@@ -54,41 +54,41 @@ class AppController extends ApiBaseController
     public function checkIn(Request $request)
     {
         $user = auth()->guard('api')->user();
-        \Log::debug($user->name.' ('.$user->id.') attempted to checkin the reference-code: '. $request->code);
+        \Log::debug($user->name . ' (' . $user->id . ') attempted to checkin the reference-code: ' . $request->code);
 
         $attendee = Attendee::where('event_id', env('CURRENT_EVENT'))
-        ->where('private_reference_number', $request->code)
-        ->first();
+                            ->where('private_reference_number', $request->code)
+                            ->first();
 
-        if (!$attendee) {
-            \Log::debug('the reference-code: '. $request->code . ' was invalid');
+        if ( ! $attendee) {
+            \Log::debug('the reference-code: ' . $request->code . ' was invalid');
 
             return response()->json([
                 'title' => 'Ukendt Kode',
                 'body' => 'Billetten tilhører ikke Musikliv',
-                ], 400);
+            ], 400);
         }
 
-        \Log::debug('the reference-code: '. $request->code . ' came back to attendee: '. $attendee->name . ' ('. $attendee->id.') ');
+        \Log::debug('the reference-code: ' . $request->code . ' came back to attendee: ' . $attendee->name . ' (' . $attendee->id . ') ');
 
         if ($attendee->is_cancelled) {
-            \Log::debug('the attendee: '.$attendee->id.' was cancelled');
+            \Log::debug('the attendee: ' . $attendee->id . ' was cancelled');
 
             return response()->json([
                 'title' => 'Ugyldig Billet',
                 'body' => 'Denne billet er ikke gyldig',
-                ], 400);
+            ], 400);
         }
 
         if ($attendee->has_arrived) {
             $arrivalTime = $attendee->arrival_time->format('H:i - d/m');
 
-            \Log::debug('the attendee: '.$attendee->id.' had already arrived at: '. $arrivaltime);
+            \Log::debug('the attendee: ' . $attendee->id . ' had already arrived at: ' . $arrivalTime);
 
             return response()->json([
                 'title' => 'Allerede tjekket ind',
                 'body' => $arrivalTime,
-                ], 400);
+            ], 400);
         }
 
         $attendee->has_arrived = 1;
@@ -96,13 +96,13 @@ class AppController extends ApiBaseController
 
         $attendee->save();
 
-        \Log::debug('the attendee: '.$attendee->id.' has been marked as arrived at '. $attendee->arrival_time);
+        \Log::debug('the attendee: ' . $attendee->id . ' has been marked as arrived at ' . $attendee->arrival_time);
 
         return response()->json([
             'title' => 'Brugeren er nu tjekket ind',
             'body' => $attendee->fullName,
             'id' => $attendee->id,
-            ]);
+        ]);
     }
 
     /**
@@ -115,11 +115,16 @@ class AppController extends ApiBaseController
         return Ticket::where('is_purchasable_in_app', 1)->orderBy('sort_order')->get();
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function purchase(Request $request)
     {
         $user = auth()->guard('api')->user();
 
-        \Log::debug($user->name .' ('.$user->id.') attempted to register a new ticket with id '. $request->ticket_id);
+        \Log::debug($user->name . ' (' . $user->id . ') attempted to register a new ticket with id ' . $request->ticket_id);
 
         $ticket_id = $request->ticket_id;
         $ticket = Ticket::findOrFail($ticket_id);
@@ -135,7 +140,7 @@ class AppController extends ApiBaseController
         $order->is_payment_received = 1;
         $order->save();
 
-        \Log::debug($user->name .' ('.$user->id.') registered a new "'. $ticket->title. '" ticket');
+        \Log::debug($user->name . ' (' . $user->id . ') registered a new "' . $ticket->title . '" ticket');
 
         $attendee = new Attendee;
         $attendee->order_id = $order->id;
@@ -154,7 +159,7 @@ class AppController extends ApiBaseController
             'title' => 'Billetten er blevet købt',
             'body' => $ticket->title,
             'order_id' => $order->id,
-            ]);
+        ]);
     }
 
     public function cancelPurchase(Request $request)
@@ -162,7 +167,7 @@ class AppController extends ApiBaseController
         $user = auth()->guard('api')->user();
 
         $order = Order::findOrFail($request->order_id);
-        \Log::debug($user->name .' ('.$user->id.') cancelled the order: '. $order->id);
+        \Log::debug($user->name . ' (' . $user->id . ') cancelled the order: ' . $order->id);
 
         $order->attendees()->delete();
         $order->delete();
@@ -170,6 +175,6 @@ class AppController extends ApiBaseController
         return response()->json([
             'title' => 'Billetten er fortrudt',
             'body' => '',
-            ]);
+        ]);
     }
 }

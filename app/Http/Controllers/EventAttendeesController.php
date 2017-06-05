@@ -132,6 +132,7 @@ class EventAttendeesController extends MyBaseController
         }
 
         $ticket_id = $request->get('ticket_id');
+        $add_ticket_price = $request->has('add_ticket_price');
         $ticket_price = 0;
         $attendee_first_name = $request->get('first_name');
         $attendee_last_name = $request->get('last_name');
@@ -159,6 +160,9 @@ class EventAttendeesController extends MyBaseController
              * Update qty sold
              */
             $ticket = Ticket::scope()->find($ticket_id);
+            if($add_ticket_price){
+                $ticket_price = $ticket->price;
+            }
             $ticket->increment('quantity_sold');
             $ticket->increment('sales_volume', $ticket_price);
             $ticket->event->increment('sales_volume', $ticket_price);
@@ -277,6 +281,9 @@ class EventAttendeesController extends MyBaseController
 
         $email_attendee = $request->get('email_ticket');
         $num_added = 0;
+        $ticket_price = 0;
+        $add_ticket_price = $request->has('add_ticket_price');
+
 
         if ($request->file('attendees_list')) {
             $the_file = Excel::load($request->file('attendees_list')->getRealPath(), function ($reader) {
@@ -290,7 +297,9 @@ class EventAttendeesController extends MyBaseController
              */
             $ticket_id = $request->get('ticket_id');
             $ticket = Ticket::scope()->find($ticket_id);
-            $ticket_price = $ticket->price;
+            if($add_ticket_price){
+                $ticket_price = $ticket->price;
+            }
             $ticket->increment('quantity_sold', $total_attendees);
             $ticket->increment('sales_volume', $ticket_price * $total_attendees);
             $ticket->event->increment('sales_volume', $ticket_price * $total_attendees);
@@ -424,12 +433,16 @@ class EventAttendeesController extends MyBaseController
         }
 
         $attendees_to_create = (int) $request->input('attendees_to_create');
+        $ticket_price = 0;
+        $add_ticket_price = $request->has('add_ticket_price');
 
         // Ticket Details
         $ticket_id = $request->get('ticket_id');
         $ticket = Ticket::scope()->findOrFail($ticket_id);
 
-        $ticket_price = $ticket->price;
+        if($add_ticket_price){
+            $ticket_price = $ticket->price;
+        }
         $ticket->increment('quantity_sold', $attendees_to_create);
         $ticket->increment('sales_volume', $ticket_price * $attendees_to_create);
         $ticket->event->increment('sales_volume', $ticket_price * $attendees_to_create);

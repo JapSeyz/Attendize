@@ -59,6 +59,13 @@
                                 <label for="email_ticket">&nbsp;&nbsp;Send invitation & ticket to attendee.</label>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <div class="checkbox custom-checkbox">
+                                <input type="checkbox" name="add_ticket_price" id="add_ticket_price" value="1" checked />
+                                <label for="add_ticket_price">&nbsp;&nbsp;Medregn billetpris i statitik</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div> <!-- /end modal body-->
