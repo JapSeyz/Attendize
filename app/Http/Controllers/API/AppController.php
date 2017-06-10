@@ -21,7 +21,8 @@ class AppController extends ApiBaseController
         $tickets = Ticket::pluck('title', 'id');
         $attendees = Attendee::scope($this->account_id)->where('event_id', env('CURRENT_EVENT'))->get();
         $attendees->transform(function($attendee) use($tickets){
-            return $attendee->ticket = $tickets[$attendee->ticket_id];
+            $attendee->ticket = $tickets[$attendee->ticket_id];
+            return $attendee;
         });
 
         return $attendees;
