@@ -3,11 +3,10 @@
 namespace App\Events;
 
 use App\Events\Event;
-use App\Models\Attendee;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class AttendeeStatusUpdate extends Event implements ShouldBroadcast
+class GuestStatusUpdated extends Event
 {
     use SerializesModels;
 
@@ -19,10 +18,10 @@ class AttendeeStatusUpdate extends Event implements ShouldBroadcast
      *
      * @param \App\Models\Attendee $attendee
      */
-    public function __construct(Attendee $attendee)
+    public function __construct(Guest $guest)
     {
-        $this->id = (int) $attendee->id;
-        $this->hasArrived = (bool) $attendee->has_arrived;
+        $this->id = (int) $guest->id;
+        $this->hasArrived = (bool) $guest->has_arrived;
     }
 
     /**
@@ -36,6 +35,6 @@ class AttendeeStatusUpdate extends Event implements ShouldBroadcast
     }
 
     public function broadcastAs(){
-        return 'attendee-status';
+        return 'guest-status';
     }
 }

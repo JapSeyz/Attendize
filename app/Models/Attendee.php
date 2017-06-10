@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\AttendeeCreated;
 use App\Events\AttendeeStatusUpdate;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -50,6 +51,10 @@ class Attendee extends MyBaseModel
 
         static::creating(function ($attendee) {
             $attendee->private_reference_number = str_pad(rand(0, pow(10, 9) - 1), 9, '0', STR_PAD_LEFT);
+        });
+
+        static::created(function ($attendee) {
+            event(new AttendeeCreated($attendee));
         });
 
         static::updated(function ($attendee) {
