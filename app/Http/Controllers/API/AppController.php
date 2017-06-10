@@ -18,7 +18,13 @@ class AppController extends ApiBaseController
      */
     public function attendees(Request $request)
     {
-        return Attendee::scope($this->account_id)->where('event_id', env('CURRENT_EVENT'))->get();
+        $tickets = Ticket::pluck('title', 'id');
+        $attendees = Attendee::scope($this->account_id)->where('event_id', env('CURRENT_EVENT'))->get();
+        $attendees->transform(function($attendee){
+            $attendee->ticket = $tickets[$attendee->ticket_id];
+        });
+
+        return $attendees;
     }
 
     /**
