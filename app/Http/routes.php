@@ -606,6 +606,41 @@ Route::group(['middleware' => ['auth', 'first.run']], function () {
             'uses' => 'EventWidgetsController@showEventWidgets',
         ]);
 
+        /*
+         * ---------
+         * Guests
+         * ---------
+         */
+        Route::get('{event_id}/guests', [
+            'as'   => 'showEventGuests',
+            'uses' => 'EventGuestController@showGuests',
+        ]);
+
+        Route::get('{event_id}/guests/create', [
+            'as'   => 'showCreateGuest',
+            'uses' => 'EventGuestController@showCreateGuest',
+        ]);
+
+        Route::post('{event_id}/guests/create', [
+            'as'   => 'postCreateGuest',
+            'uses' => 'EventGuestController@postCreateGuest'
+        ]);
+
+        Route::get('{event_id}/guests/{sponsor_id}/edit', [
+            'as'   => 'showEditGuest',
+            'uses' => 'EventGuestController@showEditGuest'
+        ]);
+
+        Route::post('{event_id}/guests/{sponsor_id}/edit', [
+            'as'   => 'postEditGuest',
+            'uses' => 'EventGuestController@postEditGuest'
+        ]);
+
+        Route::post('{event_id}/guests/{sponsor_id}/delete', [
+            'as'   => 'postDeleteGuest',
+            'uses' => 'EventGuestController@postDeleteGuest'
+        ]);
+
 
         /*
          * ---------

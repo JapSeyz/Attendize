@@ -41,6 +41,12 @@
                     <span class="text">Promote</span>
                 </a>
             </li>
+            <li class="{{ Request::is('*guests*') ? 'active' : '' }}">
+                <a href="{{route('showEventGuests', array('event_id' => $event->id))}}">
+                    <span class="figure"><i class="ico-knight"></i></span>
+                    <span class="text">Guests</span>
+                </a>
+            </li>
             <li class="{{ Request::is('*sponsors*') ? 'active' : '' }}">
                 <a href="{{route('showEventSponsors', array('event_id' => $event->id))}}">
                     <span class="figure"><i class="ico-bullhorn"></i></span>

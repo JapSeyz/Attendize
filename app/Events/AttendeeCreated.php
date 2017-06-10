@@ -19,6 +19,7 @@ class AttendeeCreated extends Event implements ShouldBroadcast
      */
     public function __construct(Attendee $attendee)
     {
+        $attendee->ticket = $attendee->ticket->title;
         $this->attendee = $attendee;
     }
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Attendee;
+use App\Models\Guest;
 use App\Models\Order;
 use App\Models\Ticket;
 use Carbon\Carbon;
@@ -50,7 +51,7 @@ class AppController extends ApiBaseController
         return response()->json([
             'title' => $message,
             'body' => $attendee->fullName,
-        ]);
+            ]);
     }
 
     /**
@@ -64,8 +65,8 @@ class AppController extends ApiBaseController
         \Log::debug($user->name . ' (' . $user->id . ') attempted to checkin the reference-code: ' . $request->code);
 
         $attendee = Attendee::where('event_id', env('CURRENT_EVENT'))
-                            ->where('private_reference_number', $request->code)
-                            ->first();
+        ->where('private_reference_number', $request->code)
+        ->first();
 
         if ( ! $attendee) {
             \Log::debug('the reference-code: ' . $request->code . ' was invalid');
@@ -73,7 +74,7 @@ class AppController extends ApiBaseController
             return response()->json([
                 'title' => 'Ukendt Kode',
                 'body' => 'Billetten tilhører ikke Musikliv',
-            ], 400);
+                ], 400);
         }
 
         \Log::debug('the reference-code: ' . $request->code . ' came back to attendee: ' . $attendee->name . ' (' . $attendee->id . ') ');
@@ -90,7 +91,7 @@ class AppController extends ApiBaseController
                     'message' => 'Billetten er ikke gyldig på dette tidspunkt',
                     'checked' => $checking,
                     'id'      => $attendee->id,
-                ]);
+                    ]);
             }
         }
 
@@ -100,7 +101,7 @@ class AppController extends ApiBaseController
             return response()->json([
                 'title' => 'Ugyldig Billet',
                 'body' => 'Denne billet er ikke gyldig',
-            ], 400);
+                ], 400);
         }
 
         if ($attendee->has_arrived) {
@@ -111,7 +112,7 @@ class AppController extends ApiBaseController
             return response()->json([
                 'title' => 'Allerede tjekket ind',
                 'body' => $arrivalTime,
-            ], 400);
+                ], 400);
         }
 
         $attendee->has_arrived = 1;
@@ -125,7 +126,7 @@ class AppController extends ApiBaseController
             'title' => 'Brugeren er nu tjekket ind',
             'body' => $attendee->fullName,
             'id' => $attendee->id,
-        ]);
+            ]);
     }
 
     /**
@@ -182,7 +183,7 @@ class AppController extends ApiBaseController
             'title' => 'Billetten er blevet købt',
             'body' => $ticket->title,
             'order_id' => $order->id,
-        ]);
+            ]);
     }
 
     public function cancelPurchase(Request $request)
@@ -198,6 +199,42 @@ class AppController extends ApiBaseController
         return response()->json([
             'title' => 'Billetten er fortrudt',
             'body' => '',
-        ]);
+            ]);
+    }
+
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return mixed
+     */
+    public function guests(Request $request)
+    {
+        return Guest::all();
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool
+     */
+    public function guest(Request $request)
+    {
+        $guest = Guest::where('id', $request->guest_id)->first();
+
+        $guest->has_arrived = $request->has_arrived;
+        $guest->arrival_time = $request->arrival_time;
+
+        $guest->save();
+
+        $message = 'Gæsten er nu tjekket ind';
+        if ( ! $request->has_arrived) {
+            $message = 'Gæsten er nu tjekket ud';
+        }
+
+        return response()->json([
+            'title' => $message,
+            'body' => $guest->name,
+            ]);
     }
 }
