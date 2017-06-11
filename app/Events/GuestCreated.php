@@ -3,8 +3,9 @@
 namespace App\Events;
 
 use App\Events\Event;
-use Illuminate\Queue\SerializesModels;
+use App\Models\Guest;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Queue\SerializesModels;
 
 class GuestCreated extends Event
 {
