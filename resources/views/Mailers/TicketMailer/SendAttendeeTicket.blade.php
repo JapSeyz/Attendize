@@ -1,10 +1,10 @@
 @extends('Emails.Layouts.Master')
 
 @section('message_content')
-Hello {{$attendee->first_name}},<br><br>
+Hej, {{$attendee->first_name}},<br><br>
 
-Your ticket for the event <b>{{$attendee->order->event->title}}</b> is attached to this email.
+Din billet til <b>{{$attendee->order->event->title}}</b> er vedhæftet denne mail.
 
 <br><br>
-Thank you
+Mange tak
 @stop

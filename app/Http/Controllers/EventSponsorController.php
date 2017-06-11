@@ -119,7 +119,13 @@ class EventSponsorController extends MyBaseController
         // Validate that the user has Access to the Event in question
         $event = Event::scope()->findOrFail($event_id);
 
-        $event->sponsors()->where('id', $sponsor_id)->delete();
+        $sponsor = $event->sponsors()->where('id', $sponsor_id)->firstOrFail();
+
+        if($sponsor->logo_path){
+            unlink(public_path($sponsor->logo_path));
+        }
+
+        $sponsor->delete();
 
         return response()->json([
             'status' => 'success',
@@ -174,6 +180,10 @@ class EventSponsorController extends MyBaseController
             $file = $request->file('sponsor_logo');
             $name = md5_file($file->path()) . md5(time()) . '.' . $file->guessExtension();
             $path = 'user_content/sponsors/';
+
+            if($sponsor->logo_path){
+                unlink(public_path($sponsor->logo_path));
+            }
 
             $file->move(public_path($path), $name);
             $sponsor->logo_path = $path . $name;

@@ -210,7 +210,7 @@ class AppController extends ApiBaseController
      */
     public function guests(Request $request)
     {
-        return Guest::all();
+        return Guest::orderBy('name')->get();
     }
 
     /**

@@ -39,7 +39,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    {!! Form::label('order_last_name', 'Order Last Name', array('class'=>'control-label required')) !!}
+                                    {!! Form::label('order_last_name', 'Order Last Name', array('class'=>'control-label')) !!}
                                     {!! Form::text('order_last_name', null, ['class' => 'form-control']) !!}
                                 </div>
                             </div>
@@ -58,6 +58,16 @@
                                    <div class="checkbox custom-checkbox">
                                        <input type="checkbox" name="add_ticket_price" id="add_ticket_price" value="1" checked />
                                        <label for="add_ticket_price">&nbsp;&nbsp;Medregn billetpris i statitik</label>
+                                   </div>
+                               </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                               <div class="form-group">
+                                   <div class="checkbox custom-checkbox">
+                                       <input type="checkbox" name="transfer_data" id="transfer_data" value="1" />
+                                       <label for="transfer_data">&nbsp;&nbsp;Overfør data til billet</label>
                                    </div>
                                </div>
                             </div>

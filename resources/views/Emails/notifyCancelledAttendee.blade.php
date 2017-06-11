@@ -2,9 +2,9 @@
 
 @section('message_content')
 
-<p>Hi there,</p>
+<p>Hej, {{ $attendee->first_name }}</p>
 <p>
-    Your ticket for the event <b>{{{$attendee->event->title}}}</b> has been cancelled.
+    Din billet til <b>{{{$attendee->event->title}}}</b> er blevet annulleret.
 </p>
 
 <p>

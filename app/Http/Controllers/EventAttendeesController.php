@@ -416,7 +416,6 @@ class EventAttendeesController extends MyBaseController
             'ticket_id'      => 'required|exists:tickets,id,account_id,' . \Auth::user()->account_id,
             'attendees_to_create' => 'required|numeric',
             'order_first_name' => 'required',
-            'order_last_name' => 'required',
             'order_email' => 'required|email',
         ];
 
@@ -435,6 +434,7 @@ class EventAttendeesController extends MyBaseController
         $attendees_to_create = (int) $request->input('attendees_to_create');
         $ticket_price = 0;
         $add_ticket_price = $request->has('add_ticket_price');
+        $transfer_data = $request->has('transfer_data');
 
         // Ticket Details
         $ticket_id = $request->get('ticket_id');
@@ -491,9 +491,17 @@ class EventAttendeesController extends MyBaseController
              * Create the attendee
              */
             $attendee = new Attendee();
+
             $attendee->first_name = '';
             $attendee->last_name = '';
             $attendee->email = '';
+
+            if($transfer_data){
+                $attendee->first_name = $order_first_name;
+                $attendee->last_name = $order_last_name;
+                $attendee->email = $order_email;
+            }
+
             $attendee->event_id = $event_id;
             $attendee->order_id = $order->id;
             $attendee->ticket_id = $ticket_id;
