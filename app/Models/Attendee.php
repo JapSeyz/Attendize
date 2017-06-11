@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Events\AttendeeCreated;
-use App\Events\AttendeeStatusUpdate;
+use App\Events\AttendeeStatusUpdated;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /*
@@ -59,7 +59,7 @@ class Attendee extends MyBaseModel
 
         static::updated(function ($attendee) {
             if($attendee->isDirty('has_arrived')) {
-                event(new AttendeeStatusUpdate($attendee));
+                event(new AttendeeStatusUpdated($attendee));
             }
         });
     }
