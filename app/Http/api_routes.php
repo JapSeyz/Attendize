@@ -40,6 +40,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'auth:api'], function () {
     Route::get('event/guests', 'API\AppController@guests');
     Route::get('event/tickets', 'API\AppController@tickets');
     Route::post('event/attendee', 'API\AppController@attendee');
+    Route::get('event/guest', 'API\AppController@guest');
     Route::post('event/checkin', 'API\AppController@checkIn');
     Route::post('event/purchase', 'API\AppController@purchase');
     Route::post('event/cancel_purchase', 'API\AppController@cancelPurchase');
