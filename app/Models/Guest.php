@@ -41,4 +41,14 @@ class Guest extends Model
     {
         return $this->arrival_time ? $this->arrival_time->format('H:i d/m') : '';
     }
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @return array $dates
+     */
+    public function getDates()
+    {
+        return ['created_at', 'updated_at', 'arrival_time'];
+    }
 }
