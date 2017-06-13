@@ -89,7 +89,6 @@ class AppController extends ApiBaseController
                 return response()->json([
                     'status'  => 'error',
                     'message' => 'Billetten er ikke gyldig på dette tidspunkt',
-                    'checked' => $checking,
                     'id'      => $attendee->id,
                     ]);
             }
