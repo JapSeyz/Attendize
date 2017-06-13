@@ -12,6 +12,7 @@ class AttendeeCreated extends Event implements ShouldBroadcast
     use SerializesModels;
 
     public $attendee;
+    public $ticket;
     /**
      * Create a new event instance.
      *
@@ -19,7 +20,7 @@ class AttendeeCreated extends Event implements ShouldBroadcast
      */
     public function __construct(Attendee $attendee)
     {
-        $attendee->ticket = $attendee->ticket->title;
+        $this->ticket = $attendee->ticket->title;
         $this->attendee = $attendee;
     }
     /**
