@@ -87,10 +87,9 @@ class AppController extends ApiBaseController
             if($attendee->ticket->valid_from > $today || $attendee->ticket->valid_to < $today){
                 \Log::debug('The attendee' . $attendee->name . ' (' . $attendee->id . '), tried to use a ticket outside its valid-time');
                 return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Billetten er ikke gyldig på dette tidspunkt',
-                    'id'      => $attendee->id,
-                    ]);
+                    'title'  => 'error',
+                    'body' => 'Billetten er ikke gyldig på dette tidspunkt'
+                    ], 400);
             }
         }
 
