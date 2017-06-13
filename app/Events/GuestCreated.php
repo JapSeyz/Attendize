@@ -7,7 +7,7 @@ use App\Models\Guest;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 
-class GuestCreated extends Event
+class GuestCreated extends Event implements ShouldBroadcast
 {
     use SerializesModels;
 
