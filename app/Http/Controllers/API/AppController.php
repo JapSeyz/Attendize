@@ -77,7 +77,7 @@ class AppController extends ApiBaseController
                 ], 400);
         }
 
-        \Log::debug('the reference-code: ' . $request->code . ' came back to attendee: ' . $attendee->name . ' (' . $attendee->id . ') ');
+        \Log::debug('the reference-code: ' . $request->code . ' came back to attendee: ' . $attendee->fullName . ' (' . $attendee->id . ') ');
 
 
         // Make sure that the ticket is valid
@@ -85,7 +85,7 @@ class AppController extends ApiBaseController
             $today = date('Y-m-d H:i:s');
 
             if($attendee->ticket->valid_from > $today || $attendee->ticket->valid_to < $today){
-                \Log::debug('The attendee' . $attendee->name . ' (' . $attendee->id . '), tried to use a ticket outside its valid-time');
+                \Log::debug('The attendee' . $attendee->fullName . ' (' . $attendee->id . '), tried to use a ticket outside its valid-time');
                 return response()->json([
                     'title'  => 'error',
                     'body' => 'Billetten er ikke gyldig på dette tidspunkt'
@@ -170,8 +170,8 @@ class AppController extends ApiBaseController
         $attendee->ticket_id = $ticket_id;
         $attendee->account_id = 1;
         $attendee->first_name = 'indgang';
-        $attendee->last_name = '';
-        $attendee->email = '';
+        $attendee->last_name = 'Musikliv';
+        $attendee->email = 'IT@ikastmusikliv.dk';
         $attendee->has_arrived = 1;
         $attendee->arrival_time = date('Y-m-d H:i:s');
         $attendee->reference_index = 1;
