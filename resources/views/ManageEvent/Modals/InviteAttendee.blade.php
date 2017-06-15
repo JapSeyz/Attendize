@@ -63,7 +63,7 @@
                         <div class="form-group">
                             <div class="checkbox custom-checkbox">
                                 <input type="checkbox" name="add_ticket_price" id="add_ticket_price" value="1" checked />
-                                <label for="add_ticket_price">&nbsp;&nbsp;Medregn billetpris i statitik</label>
+                                <label for="add_ticket_price">&nbsp;&nbsp;Medregn billetpris i statistik</label>
                             </div>
                         </div>
                     </div>
