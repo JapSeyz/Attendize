@@ -14,6 +14,8 @@ Route::group(['prefix' => 'api/public', 'middleware' => 'cors'], function(){
 // User Authentication
 Route::group(['prefix' => 'api'], function(){
     Route::post('authenticate', 'API\AuthController@authenticate');
+
+    Route::get('stats/tickets', 'API\StatController@tickets');
 });
 
 
