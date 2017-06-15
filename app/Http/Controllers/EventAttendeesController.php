@@ -154,6 +154,7 @@ class EventAttendeesController extends MyBaseController
             $order->amount = $ticket_price;
             $order->account_id = Auth::user()->account_id;
             $order->event_id = $event_id;
+            $order->is_payment_received = 1;
             $order->save();
 
             /*
