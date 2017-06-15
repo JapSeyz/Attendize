@@ -431,16 +431,6 @@ Route::group(['middleware' => ['auth', 'first.run']], function () {
             'uses' => 'EventAttendeesController@postInviteAttendee',
         ]);
 
-        Route::get('{event_id}/attendees/import', [
-            'as'   => 'showImportAttendee',
-            'uses' => 'EventAttendeesController@showImportAttendee',
-        ]);
-
-        Route::post('{event_id}/attendees/import', [
-            'as'   => 'postImportAttendee',
-            'uses' => 'EventAttendeesController@postImportAttendee',
-        ]);
-
         Route::get('{event_id}/attendees/create-empty', [
             'as'   => 'showCreateEmptyAttendee',
             'uses' => 'EventAttendeesController@showCreateEmptyAttendee',
