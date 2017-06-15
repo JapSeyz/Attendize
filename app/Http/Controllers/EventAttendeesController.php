@@ -860,7 +860,7 @@ class EventAttendeesController extends MyBaseController
 
         $attendee->ticket->decrement('quantity_sold');
 
-        if($attendee->order->amount !== 0){
+        if($attendee->order->amount != 0){
             $attendee->ticket->decrement('sales_volume', $attendee->ticket->price);
             $attendee->ticket->event->decrement('sales_volume', $attendee->ticket->price);
         }
@@ -871,7 +871,7 @@ class EventAttendeesController extends MyBaseController
         $eventStats = EventStats::where('event_id', $attendee->event_id)->where('date', $attendee->created_at->format('Y-m-d'))->first();
         if($eventStats){
             $eventStats->decrement('tickets_sold');
-            if($attendee->order->amount !== 0){
+            if($attendee->order->amount != 0){
                 $eventStats->decrement('sales_volume',  $attendee->ticket->price);
             }
         }
