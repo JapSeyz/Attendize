@@ -207,10 +207,6 @@ class Ticket extends MyBaseModel
             return config('attendize.ticket_status_sold_out');
         }
 
-        if ($this->event->start_date->lte(\Carbon::now())) {
-            return config('attendize.ticket_status_off_sale');
-        }
-
         return config('attendize.ticket_status_on_sale');
     }
 }
