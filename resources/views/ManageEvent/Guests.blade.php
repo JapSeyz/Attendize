@@ -55,7 +55,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach(\App\Models\Guest::all() as $guest)
+                            @foreach($event->guests()->latest()->get() as $guest)
                                 <tr>
                                     <td>
                                         <a href='javascript:void(0);' data-modal-id='view-guest-{{ $guest->id }}' data-href="{{route('showEditGuest', ['event_id' => $event->id, 'guest_id' => $guest->id])}}" class="loadModal">{{ $guest->name }}</a>

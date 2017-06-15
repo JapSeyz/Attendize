@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Guest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Str;
@@ -179,6 +180,11 @@ class Event extends MyBaseModel
     public function organiser()
     {
         return $this->belongsTo(\App\Models\Organiser::class);
+    }
+
+    public function guests()
+    {
+        return $this->hasMany(Guest::class);
     }
 
     /**
