@@ -33,8 +33,10 @@ class StatController extends Controller
      */
     public function checkins()
     {
+        $checkins =  Attendee::where('event_id', env('CURRENT_EVENT'))->where('has_arrived', 1)->count();
+
         return response()->json([
-            'checkins' => Attendee::where('event_id', env('CURRENT_EVENT'))where('has_arrived', 1)->count()
+            'checkins' => $checkins
         ]);
     }
 }

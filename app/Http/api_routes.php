@@ -16,6 +16,7 @@ Route::group(['prefix' => 'api'], function(){
     Route::post('authenticate', 'API\AuthController@authenticate');
 
     Route::get('stats/tickets', 'API\StatController@tickets');
+    Route::get('stats/checkins', 'API\StatController@checkins');
 });
 
 
