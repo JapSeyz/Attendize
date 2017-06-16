@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendee;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,17 @@ class StatController extends Controller
             'weekend' => $weekend,
             'friday' => $friday,
             'saturday' => $saturday
+        ]);
+    }
+
+    /**
+     * [checkins description]
+     * @return [type] [description]
+     */
+    public function checkins()
+    {
+        return response()->json([
+            'checkins' => Attendee::where('event_id', env('CURRENT_EVENT'))where('has_arrived', 1)->count()
         ]);
     }
 }
