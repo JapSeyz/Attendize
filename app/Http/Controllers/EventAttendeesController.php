@@ -227,6 +227,31 @@ class EventAttendeesController extends MyBaseController
         }
 
     }
+    /**
+     * Show the 'Create Empty Attendee' modal
+     *
+     * @param Request $request
+     * @param $event_id
+     * @return string|View
+     */
+    public function showCreateEmptyAttendee(Request $request, $event_id)
+    {
+        $event = Event::scope()->find($event_id);
+
+        /*
+         * If there are no tickets then we can't create an attendee
+         * @todo This is a bit hackish
+         */
+        if ($event->tickets->count() === 0) {
+            return '<script>showMessage("You need to create a ticket before you can add an attendee.");</script>';
+        }
+
+        return view('ManageEvent.Modals.CreateEmptyAttendees', [
+            'event'   => $event,
+            'tickets' => $event->tickets()->lists('title', 'id'),
+        ]);
+    }
+
 
     /**
      * Create Empty Attendees, useable for printed blank tickets
