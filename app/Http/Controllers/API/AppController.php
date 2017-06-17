@@ -151,6 +151,7 @@ class AppController extends ApiBaseController
         $ticket_id = $request->ticket_id;
         $ticket = Ticket::findOrFail($ticket_id);
 
+
         $order = new Order;
         $order->account_id = 1;
         $order->order_status_id = 1;
@@ -177,6 +178,9 @@ class AppController extends ApiBaseController
         $attendee->reference_index = 1;
         $attendee->save();
 
+        $ticket->increment('quantity_sold');
+        $ticket->increment('sales_volume', $ticket->price);
+
         return response()->json([
             'title' => 'Billetten er blevet købt',
             'body' => $ticket->title,
@@ -191,6 +195,8 @@ class AppController extends ApiBaseController
         $order = Order::findOrFail($request->order_id);
         \Log::debug($user->name . ' (' . $user->id . ') cancelled the order: ' . $order->id);
 
+        $order->attendees()->first()->ticket()->decrement('quantity_sold');
+        $order->attendees()->first()->ticket->decrement('sales_volume', $order->attendees()->first()->ticket->price);
         $order->attendees()->delete();
         $order->delete();
 
