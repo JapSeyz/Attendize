@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Attendize\Utils;
 use App\Models\Affiliate;
 use App\Models\Event;
+use App\Models\EventAccessCodes;
 use App\Models\EventStats;
 use Auth;
 use Cookie;
@@ -32,8 +33,8 @@ class EventViewController extends Controller
         }
 
         $data = [
-            'event'       => $event,
-            'tickets'     => $event->tickets()->where('is_hidden', 0)->orderBy('sort_order', 'asc')->get(),
+            'event' => $event,
+            'tickets' => $event->tickets()->orderBy('sort_order', 'asc')->get(),
             'is_embedded' => 0,
         ];
         /*
@@ -116,12 +117,12 @@ class EventViewController extends Controller
             $message->to($event->organiser->email, $event->organiser->name)
                 ->from(config('attendize.outgoing_email_noreply'), $data['sender_name'])
                 ->replyTo($data['sender_email'], $data['sender_name'])
-                ->subject('Message Regarding: ' . $event->title);
+                ->subject(trans("Email.message_regarding_event", ["event"=>$event->title]));
         });
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'Message Successfully Sent',
+            'message' => trans("Controllers.message_successfully_sent"),
         ]);
     }
 
@@ -134,6 +135,49 @@ class EventViewController extends Controller
         return response()->make($icsContent, 200, [
             'Content-Type' => 'application/octet-stream',
             'Content-Disposition' => 'attachment; filename="event.ics'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $event_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function postShowHiddenTickets(Request $request, $event_id)
+    {
+        $event = Event::findOrFail($event_id);
+
+        $accessCode = strtoupper(strip_tags($request->get('access_code')));
+        if (!$accessCode) {
+            return response()->json([
+                'status' => 'error',
+                'message' => trans('AccessCodes.valid_code_required'),
+            ]);
+        }
+
+        $unlockedHiddenTickets = $event->tickets()
+            ->where('is_hidden', true)
+            ->orderBy('sort_order', 'asc')
+            ->get()
+            ->filter(function($ticket) use ($accessCode) {
+                // Only return the hidden tickets that match the access code
+                return ($ticket->event_access_codes()->where('code', $accessCode)->get()->count() > 0);
+            });
+
+        if ($unlockedHiddenTickets->count() === 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => trans('AccessCodes.no_tickets_matched'),
+            ]);
+        }
+
+        // Bump usage count
+        EventAccessCodes::logUsage($event_id, $accessCode);
+
+        return view('Public.ViewEvent.Partials.EventHiddenTicketsSelection', [
+            'event' => $event,
+            'tickets' => $unlockedHiddenTickets,
+            'is_embedded' => 0,
         ]);
     }
 }

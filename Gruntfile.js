@@ -7,6 +7,7 @@ module.exports = function (grunt) {
             development: {
                 options: {
                     compress: true,
+                    javascriptEnabled: true,
                 },
                 files: {
                     "./public/assets/stylesheet/application.css": "./public/assets/stylesheet/application.less",
@@ -44,7 +45,7 @@ module.exports = function (grunt) {
                     './public/vendor/humane-js/humane.js',
                     './public/vendor/RRSSB/js/rrssb.js',
                     './public/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js',
-                    './public/vendor/curioussolutions-datetimepicker/dist/DateTimePicker.js',
+                    './public/vendor/datetimepicker/dist/DateTimePicker.js',
                     './public/vendor/jquery-minicolors/jquery.minicolors.min.js',
                     './public/assets/javascript/app.js'
                 ],
@@ -70,17 +71,22 @@ module.exports = function (grunt) {
                 }
             },
         },
-        phpunit: {
-            classes: {},
-            options: {}
-        },
+        watch: {
+            scripts: {
+                files: ['./public/assets/**/*.js'],
+                tasks: ['default'],
+                options: {
+                    spawn: false,
+                },
+            },
+        }
     });
 
     // Plugin loading
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    //grunt.loadNpmTasks('grunt-phpunit');
+    grunt.loadNpmTasks('grunt-contrib-watch');
     // Task definition
     grunt.registerTask('default', ['less', 'concat']);
     grunt.registerTask('deploy', ['less', 'concat', 'uglify']);

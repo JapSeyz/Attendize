@@ -29,9 +29,9 @@ class ManageAccountController extends MyBaseController
     {
         $data = [
             'account'                  => Account::find(Auth::user()->account_id),
-            'timezones'                => Timezone::lists('location', 'id'),
-            'currencies'               => Currency::lists('title', 'id'),
-            'payment_gateways'         => PaymentGateway::lists('provider_name', 'id'),
+            'timezones'                => Timezone::pluck('location', 'id'),
+            'currencies'               => Currency::pluck('title', 'id'),
+            'payment_gateways'         => PaymentGateway::pluck('provider_name', 'id'),
             'account_payment_gateways' => AccountPaymentGateway::scope()->get(),
             'version_info'             => $this->getVersionInfo(),
         ];
@@ -42,7 +42,7 @@ class ManageAccountController extends MyBaseController
 
     public function showStripeReturn()
     {
-        $error_message = 'There was an error connecting your Stripe account. Please try again.';
+        $error_message = trans("Controllers.stripe_error");
 
         if (Input::get('error') || !Input::get('code')) {
             \Session::flash('message', $error_message);
@@ -79,7 +79,7 @@ class ManageAccountController extends MyBaseController
 
         $account->save();
 
-        \Session::flash('message', 'You have successfully connected your Stripe account.');
+        \Session::flash('message', trans("Controllers.stripe_success"));
 
         return redirect()->route('showEventsDashboard');
     }
@@ -111,7 +111,7 @@ class ManageAccountController extends MyBaseController
         return response()->json([
             'status'  => 'success',
             'id'      => $account->id,
-            'message' => 'Account Successfully Updated',
+            'message' => trans("Controllers.account_successfully_updated"),
         ]);
     }
 
@@ -133,12 +133,6 @@ class ManageAccountController extends MyBaseController
             case config('attendize.payment_gateway_paypal') : //PayPal
                 $config = $request->get('paypal');
                 break;
-            case config('attendize.payment_gateway_coinbase') : //BitPay
-                $config = $request->get('coinbase');
-                break;
-			case config('attendize.payment_gateway_migs') : //MIGS
-				$config = $request->get('migs');
-				break;
         }
 
         $account_payment_gateway = AccountPaymentGateway::firstOrNew(
@@ -146,6 +140,7 @@ class ManageAccountController extends MyBaseController
                 'payment_gateway_id' => $gateway_id,
                 'account_id'         => $account->id,
             ]);
+
         $account_payment_gateway->config = $config;
         $account_payment_gateway->account_id = $account->id;
         $account_payment_gateway->payment_gateway_id = $gateway_id;
@@ -157,7 +152,7 @@ class ManageAccountController extends MyBaseController
         return response()->json([
             'status'  => 'success',
             'id'      => $account_payment_gateway->id,
-            'message' => 'Payment Information Successfully Updated',
+            'message' => trans("Controllers.payment_information_successfully_updated"),
         ]);
     }
 
@@ -173,9 +168,9 @@ class ManageAccountController extends MyBaseController
         ];
 
         $messages = [
-            'email.email'    => 'Please enter a valid E-mail address.',
-            'email.required' => 'E-mail address is required.',
-            'email.unique'   => 'E-mail already in use for this account.',
+            'email.email'    => trans("Controllers.error.email.email"),
+            'email.required' => trans("Controllers.error.email.required"),
+            'email.unique'   => trans("Controllers.error.email.unique"),
         ];
 
         $validation = Validator::make(Input::all(), $rules, $messages);
@@ -205,12 +200,12 @@ class ManageAccountController extends MyBaseController
 
         Mail::send('Emails.inviteUser', $data, function ($message) use ($data) {
             $message->to($data['user']->email)
-                ->subject($data['inviter']->first_name . ' ' . $data['inviter']->last_name . ' added you to an ' . config('attendize.app_name') . ' account.');
+                ->subject(trans("Email.invite_user", ["name"=>$data['inviter']->first_name . ' ' . $data['inviter']->last_name, "app"=>config('attendize.app_name')]));
         });
 
         return response()->json([
             'status'  => 'success',
-            'message' => 'Success! <b>' . $user->email . '</b> has been sent further instructions.',
+            'message' => trans("Controllers.success_name_has_received_instruction", ["name"=>$user->email]),
         ]);
     }
 

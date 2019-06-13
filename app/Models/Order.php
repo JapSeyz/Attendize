@@ -5,6 +5,7 @@ namespace App\Models;
 use File;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use PDF;
+use Illuminate\Support\Str;
 
 class Order extends MyBaseModel
 {
@@ -106,7 +107,7 @@ class Order extends MyBaseModel
      */
     public function getOrganiserAmountAttribute()
     {
-        return $this->amount + $this->organiser_booking_fee;
+        return $this->amount + $this->organiser_booking_fee + $this->taxamt;
     }
 
     /**
@@ -159,12 +160,7 @@ class Order extends MyBaseModel
         }
 
         PDF::setOutputMode('F'); // force to file
-
-        if(count($this->event->ticket_sponsors)) {
-            PDF::html('Public.ViewEvent.Partials.PDFSponsorTicket', $data, $pdf_file_path);
-        } else {
-            PDF::html('Public.ViewEvent.Partials.PDFTicket', $data, $pdf_file_path);
-        }
+        PDF::html('Public.ViewEvent.Partials.PDFTicket', $data, $pdf_file_path);
 
         $this->ticket_pdf_path = config('attendize.event_pdf_tickets_path') . '/' . $this->order_reference . '.pdf';
         $this->save();
@@ -180,7 +176,14 @@ class Order extends MyBaseModel
         parent::boot();
 
         static::creating(function ($order) {
-            $order->order_reference = strtoupper(str_random(5)) . date('jn');
-        });
+            do {
+                    //generate a random string using Laravel's str_random helper
+                    $token = Str::Random(5) . date('jn');
+            } //check if the token already exists and if it does, try again
+            
+			while (Order::where('order_reference', $token)->first());
+            $order->order_reference = $token;
+        
+		});
     }
 }

@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL'),
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -91,8 +91,8 @@ return [
     |
     */
 
-    'key'    => env('APP_KEY', 'SomeRandomString'),
-    'cipher' => 'AES-256-CBC',
+    'key'    => env('APP_KEY'),
+    'cipher' => env('APP_CIPHER', 'AES-256-CBC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -146,6 +146,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -170,6 +171,7 @@ return [
         MaxHoffmann\Parsedown\ParsedownServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
+        Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider::class
     ],
 
     /*
@@ -205,6 +207,7 @@ return [
         'Log'          => Illuminate\Support\Facades\Log::class,
         'Mail'         => Illuminate\Support\Facades\Mail::class,
         'Password'     => Illuminate\Support\Facades\Password::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
         'Queue'        => Illuminate\Support\Facades\Queue::class,
         'Redirect'     => Illuminate\Support\Facades\Redirect::class,
         'Redis'        => Illuminate\Support\Facades\Redis::class,
@@ -232,6 +235,7 @@ return [
         'Purifier'     => Mews\Purifier\Facades\Purifier::class,
         'Markdown'     => MaxHoffmann\Parsedown\ParsedownFacade::class,
         'Omnipay'      => Omnipay\Omnipay::class,
+        'LaravelLocalization' => Mcamara\LaravelLocalization\Facades\LaravelLocalization::class,
 
     ],
 ];

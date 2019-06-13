@@ -60,8 +60,10 @@ class GenerateTicket extends Job implements ShouldQueue
         $attendees = $query->get();
 
         $image_path = $event->organiser->full_logo_path;
-        if ($event->images->first() != null) {
-            $image_path = $event->images()->first()->image_path;
+        $images = [];
+        $imgs = $order->event->images;
+        foreach ($imgs as $img) {
+            $images[] = base64_encode(file_get_contents(public_path($img->image_path)));
         }
 
         $data = [
@@ -70,16 +72,19 @@ class GenerateTicket extends Job implements ShouldQueue
             'attendees' => $attendees,
             'css'       => file_get_contents(public_path('assets/stylesheet/ticket.css')),
             'image'     => base64_encode(file_get_contents(public_path($image_path))),
+            'images'    => $images,
         ];
-
-        PDF::setOutputMode('F'); // force to file
-        if(count($event->ticket_sponsors)) {
-            PDF::html('Public.ViewEvent.Partials.PDFSponsorTicket', $data, $file_path);
-        } else {
+        try {
+            PDF::setOutputMode('F'); // force to file
             PDF::html('Public.ViewEvent.Partials.PDFTicket', $data, $file_path);
+            Log::info("Ticket generated!");
+        } catch(\Exception $e) {
+            Log::error("Error generating ticket. This can be due to permissions on vendor/nitmedia/wkhtml2pdf/src/Nitmedia/Wkhtml2pdf/lib. This folder requires write and execute permissions for the web user");
+            Log::error("Error message. " . $e->getMessage());
+            Log::error("Error stack trace" . $e->getTraceAsString());
+            $this->fail($e);
         }
 
-        Log::info("Ticket generated!");
     }
 
     private function isAttendeeTicket()

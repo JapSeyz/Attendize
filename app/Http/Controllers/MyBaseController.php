@@ -13,6 +13,11 @@ class MyBaseController extends Controller
 {
     public function __construct()
     {
+
+        if (empty(Auth::user())) {
+            return redirect()->to('/login');
+        }
+
         /*
          * Set up JS across all views
          */
@@ -22,14 +27,10 @@ class MyBaseController extends Controller
                 'email'        => Auth::user()->email,
                 'is_confirmed' => Auth::user()->is_confirmed,
             ],
-            /*
-             * @todo These should be user selectable
-             */
-            'DateFormat'          => 'dd-MM-yyyy',
-            'DateTimeFormat'      => 'dd-MM-yyyy hh:mm',
-            'GenericErrorMessage' => 'Whoops! An unknown error has occurred. Please try again or contact support if the problem persists.'
+            'DateTimeFormat'      => config('attendize.default_date_picker_format'),
+            'DateSeparator'       => config('attendize.default_date_picker_seperator'),
+            'GenericErrorMessage' => trans("Controllers.whoops"),
         ]);
-
         /*
          * Share the organizers across all views
          */

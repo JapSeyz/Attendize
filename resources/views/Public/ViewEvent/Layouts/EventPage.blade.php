@@ -69,7 +69,7 @@
         @if (($event->bg_type == 'image' || $event->bg_type == 'custom_image' || Input::get('bg_img_preview')) && !Input::get('bg_color_preview'))
             <style>
                 body {
-                    background: url({{(Input::get('bg_img_preview') ? '/'.Input::get('bg_img_preview') :  asset(config('attendize.cdn_url_static_assets').'/'.$event->bg_image_path))}}) no-repeat center center fixed;
+                    background: url({{(Input::get('bg_img_preview') ? URL::to(Input::get('bg_img_preview')) :  asset(config('attendize.cdn_url_static_assets').'/'.$event->bg_image_path))}}) no-repeat center center fixed;
                     background-size: cover;
                 }
             </style>
@@ -88,8 +88,9 @@
         @yield('footer')
 
         <a href="#intro" style="display:none;" class="totop"><i class="ico-angle-up"></i>
-            <span style="font-size:11px;">TOP</span></a>
+            <span style="font-size:11px;">@lang("basic.TOP")</span></a>
 
+        @include("Shared.Partials.LangScript")
         {!!HTML::script(config('attendize.cdn_url_static_assets').'/assets/javascript/frontend.js')!!}
 
 

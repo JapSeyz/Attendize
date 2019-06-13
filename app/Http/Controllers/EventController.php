@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
-use App\Models\EventImage;
-use App\Models\Organiser;
-use Auth;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Image;
 use Log;
+use Auth;
+use Image;
 use Validator;
+use App\Models\Event;
+use App\Models\Organiser;
+use App\Models\EventImage;
+use Illuminate\Http\Request;
+use Spatie\GoogleCalendar\Event as GCEvent;
 
 class EventController extends MyBaseController
 {
@@ -24,7 +24,7 @@ class EventController extends MyBaseController
     {
         $data = [
             'modal_id'     => $request->get('modal_id'),
-            'organisers'   => Organiser::scope()->lists('name', 'id'),
+            'organisers'   => Organiser::scope()->pluck('name', 'id'),
             'organiser_id' => $request->get('organiser_id') ? $request->get('organiser_id') : false,
         ];
 
@@ -50,8 +50,7 @@ class EventController extends MyBaseController
 
         $event->title = $request->get('title');
         $event->description = strip_tags($request->get('description'));
-        $event->start_date = $request->get('start_date') ? Carbon::createFromFormat('d-m-Y H:i',
-            $request->get('start_date')) : null;
+        $event->start_date = $request->get('start_date');
 
         /*
          * Venue location info (Usually auto-filled from google maps)
@@ -83,8 +82,7 @@ class EventController extends MyBaseController
             $event->location_is_manual = 1;
         }
 
-        $event->end_date = $request->get('end_date') ? Carbon::createFromFormat('d-m-Y H:i',
-            $request->get('end_date')) : null;
+        $event->end_date = $request->get('end_date');
 
         $event->currency_id = Auth::user()->account->currency_id;
         //$event->timezone_id = Auth::user()->account->timezone_id;
@@ -103,7 +101,7 @@ class EventController extends MyBaseController
                 'organiser_email' => ['required', 'email'],
             ];
             $messages = [
-                'organiser_name.required' => 'You must give a name for the event organiser.',
+                'organiser_name.required' => trans("Controllers.no_organiser_name_error"),
             ];
 
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -122,13 +120,12 @@ class EventController extends MyBaseController
             $organiser->twitter = $request->get('organiser_twitter');
             $organiser->save();
             $event->organiser_id = $organiser->id;
-
         } elseif ($request->get('organiser_id')) {
             $event->organiser_id = $request->get('organiser_id');
         } else { /* Somethings gone horribly wrong */
             return response()->json([
                 'status'   => 'error',
-                'messages' => 'There was an issue finding the organiser.',
+                'messages' => trans("Controllers.organiser_other_error"),
             ]);
         }
 
@@ -165,7 +162,7 @@ class EventController extends MyBaseController
 
             return response()->json([
                 'status'   => 'error',
-                'messages' => 'Whoops! There was a problem creating your event. Please try again.',
+                'messages' => trans("Controllers.event_create_exception"),
             ]);
         }
 
@@ -224,10 +221,11 @@ class EventController extends MyBaseController
         }
 
         $event->is_live = $request->get('is_live');
+        $event->currency_id = $request->get('currency_id');
         $event->title = $request->get('title');
         $event->description = strip_tags($request->get('description'));
-        $event->start_date = $request->get('start_date') ? Carbon::createFromFormat('d-m-Y H:i',
-            $request->get('start_date')) : null;
+        $event->start_date = $request->get('start_date');
+        $event->google_tag_manager_code = $request->get('google_tag_manager_code');
 
         /*
          * If the google place ID is the same as before then don't update the venue
@@ -268,8 +266,8 @@ class EventController extends MyBaseController
             }
         }
 
-        $event->end_date = $request->get('end_date') ? Carbon::createFromFormat('d-m-Y H:i',
-            $request->get('end_date')) : null;
+        $event->end_date = $request->get('end_date');
+        $event->event_image_position = $request->get('event_image_position');
 
         if ($request->get('remove_current_image') == '1') {
             EventImage::where('event_id', '=', $event->id)->delete();
@@ -307,7 +305,7 @@ class EventController extends MyBaseController
         return response()->json([
             'status'      => 'success',
             'id'          => $event->id,
-            'message'     => 'Event Successfully Updated',
+            'message'     => trans("Controllers.event_successfully_updated"),
             'redirectUrl' => '',
         ]);
     }
@@ -342,8 +340,24 @@ class EventController extends MyBaseController
             }
 
             return response()->json([
-                'error' => 'There was a problem uploading your image.',
+                'error' => trans("Controllers.image_upload_error"),
             ]);
         }
+    }
+
+    /**
+     * Puplish event and redirect
+     * @param  Integer|false $event_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function makeEventLive($event_id = false) {
+        $event = Event::scope()->findOrFail($event_id);
+        $event->is_live = 1;
+        $event->save();
+        \Session::flash('message', trans('Event.go_live'));
+
+        return redirect()->action(
+            'EventDashboardController@showDashboard', ['event_id' => $event_id]
+        );
     }
 }

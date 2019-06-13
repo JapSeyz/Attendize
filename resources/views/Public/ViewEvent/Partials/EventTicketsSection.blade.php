@@ -1,13 +1,13 @@
 <section id="tickets" class="container">
     <div class="row">
         <h1 class='section_head'>
-            Tickets
+            @lang("Public_ViewEvent.tickets")
         </h1>
     </div>
 
-    @if($event->start_date->isPast())
+    @if($event->end_date->isPast())
         <div class="alert alert-boring">
-            This event has {{($event->end_date->isFuture() ? 'already started' : 'ended')}}.
+            @lang("Public_ViewEvent.event_already", ['started' => trans('Public_ViewEvent.event_already_ended')])
         </div>
     @else
 
@@ -22,7 +22,7 @@
                                 <?php
                                 $is_free_event = true;
                                 ?>
-                                @foreach($tickets as $ticket)
+                                @foreach($tickets->where('is_hidden', false) as $ticket)
                                     <tr class="ticket" property="offers" typeof="Offer">
                                         <td>
                                 <span class="ticket-title semibold" property="name">
@@ -32,16 +32,17 @@
                                                 {{$ticket->description}}
                                             </p>
                                         </td>
-                                        <td style="width:180px; text-align: right;">
+                                        <td style="width:200px; text-align: right;">
                                             <div class="ticket-pricing" style="margin-right: 20px;">
                                                 @if($ticket->is_free)
-                                                    FREE
+                                                    @lang("Public_ViewEvent.free")
                                                     <meta property="price" content="0">
                                                 @else
                                                     <?php
                                                     $is_free_event = false;
                                                     ?>
-                                                    <span title='{{money($ticket->price, $event->currency)}} Ticket Price + {{money($ticket->total_booking_fee, $event->currency)}} Booking Fees'>{{money($ticket->total_price, $event->currency)}} </span>
+                                                    <span title='{{money($ticket->price, $event->currency)}} @lang("Public_ViewEvent.ticket_price") + {{money($ticket->total_booking_fee, $event->currency)}} @lang("Public_ViewEvent.booking_fees")'>{{money($ticket->total_price, $event->currency)}} </span>
+                                                    <span class="tax-amount text-muted text-smaller">{{ ($event->organiser->tax_name && $event->organiser->tax_value) ? '(+'.money(($ticket->total_price*($event->organiser->tax_value)/100), $event->currency).' '.$event->organiser->tax_name.')' : '' }}</span>
                                                     <meta property="priceCurrency"
                                                           content="{{ $event->currency->code }}">
                                                     <meta property="price"
@@ -53,7 +54,7 @@
                                             @if($ticket->is_paused)
 
                                                 <span class="text-danger">
-                                    Currently Not On Sale
+                                    @lang("Public_ViewEvent.currently_not_on_sale")
                                 </span>
 
                                             @else
@@ -61,15 +62,15 @@
                                                 @if($ticket->sale_status === config('attendize.ticket_status_sold_out'))
                                                     <span class="text-danger" property="availability"
                                                           content="http://schema.org/SoldOut">
-                                    Sold Out
+                                    @lang("Public_ViewEvent.sold_out")
                                 </span>
                                                 @elseif($ticket->sale_status === config('attendize.ticket_status_before_sale_date'))
                                                     <span class="text-danger">
-                                    Sales Have Not Started
+                                    @lang("Public_ViewEvent.sales_have_not_started")
                                 </span>
                                                 @elseif($ticket->sale_status === config('attendize.ticket_status_after_sale_date'))
                                                     <span class="text-danger">
-                                    Sales Have Ended
+                                    @lang("Public_ViewEvent.sales_have_ended")
                                 </span>
                                                 @else
                                                     {!! Form::hidden('tickets[]', $ticket->id) !!}
@@ -89,7 +90,32 @@
                                         </td>
                                     </tr>
                                 @endforeach
-
+                                @if ($tickets->where('is_hidden', true)->count() > 0)
+                                <tr class="has-access-codes" data-url="{{route('postShowHiddenTickets', ['event_id' => $event->id])}}">
+                                    <td colspan="3"  style="text-align: left">
+                                        @lang("Public_ViewEvent.has_unlock_codes")
+                                        <div class="form-group" style="display:inline-block;margin-bottom:0;margin-left:15px;">
+                                            {!!  Form::text('unlock_code', null, [
+                                            'class' => 'form-control',
+                                            'id' => 'unlock_code',
+                                            'style' => 'display:inline-block;width:65%;text-transform:uppercase;',
+                                            'placeholder' => 'ex: UNLOCKCODE01',
+                                        ]) !!}
+                                            {!! Form::button(trans("basic.apply"), [
+                                                'class' => "btn btn-success",
+                                                'id' => 'apply_access_code',
+                                                'style' => 'display:inline-block;margin-top:-2px;',
+                                                'data-dismiss' => 'modal',
+                                            ]) !!}
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <td colspan="3" style="text-align: center">
+                                        @lang("Public_ViewEvent.below_tickets")
+                                    </td>
+                                </tr>
                                 <tr class="checkout">
                                     <td colspan="3">
                                         @if(!$is_free_event)
@@ -99,14 +125,13 @@
                                                 @if($event->enable_offline_payments)
 
                                                     <div class="help-block" style="font-size: 11px;">
-                                                        Offline Payment Methods Available
+                                                        @lang("Public_ViewEvent.offline_payment_methods_available")
                                                     </div>
                                                 @endif
-
                                             </div>
 
                                         @endif
-                                        {!!Form::submit('Register', ['class' => 'btn btn-lg btn-primary pull-right'])!!}
+                                        {!!Form::submit(trans("Public_ViewEvent.register"), ['class' => 'btn btn-lg btn-primary pull-right'])!!}
                                     </td>
                                 </tr>
                             </table>
@@ -120,7 +145,7 @@
         @else
 
             <div class="alert alert-boring">
-                Tickets are currently unavailable.
+                @lang("Public_ViewEvent.tickets_are_currently_unavailable")
             </div>
 
         @endif
